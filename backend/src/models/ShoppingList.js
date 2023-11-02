@@ -1,8 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../connection');
 
-const User = sequelize.define('User', {
-  user_name: {
+const ShoppingList = sequelize.define('Shopping_List', {
+  name: {
     type: DataTypes.STRING,
     allowNull: false,
     min: 0,
@@ -10,4 +10,4 @@ const User = sequelize.define('User', {
   },
 });
 
-module.exports = User;
+module.exports = ShoppingList;
