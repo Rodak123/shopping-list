@@ -3,7 +3,7 @@ import Box from '@mui/joy/Box';
 
 function Header() {
   return (
-    <Box>
+    <Box backgroundColor={'red'}>
       <Typography level="title-md">Hehehehehehehhehee</Typography>
     </Box>
   );
