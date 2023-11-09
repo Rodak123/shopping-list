@@ -1,19 +1,25 @@
-import { Grid } from '@mui/joy';
+import { Container, Grid } from '@mui/joy';
 import './App.css';
-import Button from './components/Button';
 import CardDemo from './components/CardDemo';
 import Header from './components/Header';
 
 function App() {
+  const gridSpacing = 2;
+
   return (
     <>
       <div className="App">
-        <Grid container spacing={2}>
-          <Grid md={12}>
-            <Header />
+        <Grid container spacing={0}>
+          <Grid xs={2}>
+            <Container>Sidebar</Container>
           </Grid>
-          <Grid md={4}>
-            <CardDemo />
+          <Grid xs={10}>
+            <Header />
+            <Grid container spacing={0}>
+              <Grid xs={4}>
+                <CardDemo />
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </div>
