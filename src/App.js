@@ -9,10 +9,7 @@ function App() {
     <>
       <div className="App">
         <Grid container spacing={0} minHeight={'100vh'}>
-          <Grid xs={2}>
-            <Sidebar />
-          </Grid>
-          <Grid xs={10}>
+          <Grid xs={12}>
             <Header />
             <Grid container spacing={0}>
               <Grid xs={4}>
