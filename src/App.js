@@ -1,7 +1,8 @@
-import { Container, Grid } from '@mui/joy';
+import { Grid } from '@mui/joy';
 import './App.css';
 import CardDemo from './components/CardDemo';
 import Header from './components/Header';
+import Sidebar from './components/Sidebar';
 
 function App() {
   const gridSpacing = 2;
@@ -10,8 +11,8 @@ function App() {
     <>
       <div className="App">
         <Grid container spacing={0}>
-          <Grid xs={2}>
-            <Container>Sidebar</Container>
+          <Grid xs={2} minHeight={'100vh'}>
+            <Sidebar />
           </Grid>
           <Grid xs={10}>
             <Header />
