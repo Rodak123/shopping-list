@@ -3,7 +3,7 @@ import SidebarSlide from '../components/SidebarSlide';
 
 function Header() {
   return (
-    <Box backgroundColor={'#424242'} height={52} display={'flex'} padding={'6px'}>
+    <Box borderBottom={'1px solid'} height={52} display={'flex'} padding={'6px'}>
       <SidebarSlide />
     </Box>
   );
