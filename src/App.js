@@ -5,13 +5,11 @@ import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 
 function App() {
-  const gridSpacing = 2;
-
   return (
     <>
       <div className="App">
-        <Grid container spacing={0}>
-          <Grid xs={2} minHeight={'100vh'}>
+        <Grid container spacing={0} minHeight={'100vh'}>
+          <Grid xs={2}>
             <Sidebar />
           </Grid>
           <Grid xs={10}>

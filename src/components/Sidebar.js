@@ -2,7 +2,7 @@ import { Button, Box, Typography } from '@mui/joy';
 
 function Sidebar() {
   return (
-    <Box padding={'6px'} minHeight={'100%'}>
+    <Box padding={'6px'}>
       <Button
         color={'primary'}
         sx={{
