@@ -3,6 +3,7 @@ import './App.css';
 import CardDemo from './components/CardDemo';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
+import CartAdd from './components/CartAdd.js';
 
 function App() {
   return (
@@ -13,7 +14,7 @@ function App() {
             <Header />
             <Grid container spacing={0}>
               <Grid xs={4}>
-                <CardDemo />
+                <CartAdd />
               </Grid>
             </Grid>
           </Grid>
