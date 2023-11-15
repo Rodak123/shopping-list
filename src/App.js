@@ -1,8 +1,7 @@
-import { Grid } from '@mui/joy';
+import { Grid, Stack } from '@mui/joy';
 import './App.css';
 import CardDemo from './components/CardDemo';
 import Header from './components/Header';
-import Sidebar from './components/Sidebar';
 import CartAdd from './components/CartAdd.js';
 import ItemAdd from './components/ItemAdd.js';
 import CartName from './components/CartName.js';
@@ -12,12 +11,9 @@ function App() {
   return (
     <>
       <div className="App">
-        <Stack direction="column" justifyContent="center" alignItems="stretch" spacing={2}>
+        <Stack direction="column" spacing={2}>
           <Header />
-          <Stack direction="row" justifyContent="center" alignItems="center" spacing={2}>
-            <CartName />
-            <ItemAdd />
-          </Stack>
+          <CardDemo />
         </Stack>
       </div>
     </>

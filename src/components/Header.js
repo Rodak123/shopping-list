@@ -1,10 +1,10 @@
-import { Typography, Box, Button } from '@mui/joy';
-import SidebarSlide from '../components/SidebarSlide';
+import { Box } from '@mui/joy';
+import Sidebar from './Sidebar/Sidebar';
 
 function Header() {
   return (
-    <Box borderBottom={'1px solid'} height={52} display={'flex'} padding={'6px'}>
-      <SidebarSlide />
+    <Box borderBottom={'1px solid'} display={'flex'} padding={'6px'}>
+      <Sidebar />
     </Box>
   );
 }
