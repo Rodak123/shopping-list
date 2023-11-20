@@ -5,7 +5,6 @@ import Header from './components/Header';
 import CartAdd from './components/CartAdd.js';
 import ItemAdd from './components/ItemAdd.js';
 import CartName from './components/CartName.js';
-import Stack from '@mui/joy/Stack';
 
 function App() {
   return (
