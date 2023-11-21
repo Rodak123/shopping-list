@@ -12,7 +12,10 @@ function App() {
       <div className="App">
         <Stack direction="column" spacing={2}>
           <Header />
-          <CardDemo />
+          <Stack direction="row" spacing={2} justifyContent="center">
+            <CartName />
+            <ItemAdd />
+          </Stack>
         </Stack>
       </div>
     </>
