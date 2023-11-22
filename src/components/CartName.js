@@ -13,7 +13,7 @@ function CartName() {
         padding: '10.5px',
       }}
     >
-      <Typography>Název Nákupního Košíku</Typography>
+      <Typography>Název nákupního listu</Typography>
     </Box>
   );
 }

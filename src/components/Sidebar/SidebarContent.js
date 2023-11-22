@@ -1,113 +1,134 @@
 import {
-  Box,
-  List,
-  ListItemButton,
-  Button,
-  Typography,
-  ModalClose,
-  DialogTitle,
-  DialogContent,
-  Avatar,
-  Stack,
+    Box,
+    List,
+    ListItemButton,
+    Button,
+    Typography,
+    ModalClose,
+    DialogTitle,
+    DialogContent,
+    Avatar,
+    Stack,
 } from '@mui/joy';
 import { useApi } from '../../contexts/ApiContext';
+import { usePreferences } from '../../contexts/PreferencesContext';
 import DateFormatter from '../DateFormatter';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 function SidebarContent() {
-  const { api } = useApi();
-  const [user, setUser] = useState(null);
-  const [lists, setLists] = useState([]);
+    const { api } = useApi();
+    const { shoppingListsPrefs } = usePreferences();
+    const [user, setUser] = useState(null);
+    const [shoppingLists, setShoppingLists] = useState([]);
 
-  useEffect(() => {
-    if (api !== null) {
-      axios.get(api.url + '/user/' + api.id).then(function (res) {
-        if (res.data) {
-          setUser(res.data);
+    useEffect(() => {
+        if (api !== null) {
+            axios.get(api.url + '/user/' + api.id).then(function (res) {
+                if (res.data) {
+                    setUser(res.data);
+                }
+            });
+
+            axios.get(api.url + '/user/' + api.id + '/list').then(function (res) {
+                if (res.data) {
+                    setShoppingLists(res.data);
+                }
+            });
         }
-      });
+    }, [api]);
 
-      axios.get(api.url + '/user/' + api.id + '/list').then(function (res) {
-        if (res.data) {
-          setLists(res.data);
+    if (user === null) {
+        return <Typography>Loading...</Typography>;
+    }
+
+    const addNewList = () => {
+        if (api !== null) {
+            axios
+                .put(api.url + '/user/' + api.id + '/list/create', {
+                    name: 'Nový List ' + (shoppingLists.length + 1),
+                })
+                .then(function (res) {
+                    if (res.data) {
+                        setShoppingLists([...shoppingLists, res.data]);
+                        selectShoppingList(shoppingLists.length);
+                    }
+                });
         }
-      });
-    }
-  }, [api]);
+    };
 
-  const addNewList = () => {
-    if (api !== null) {
-      axios.put(api.url + '/user/' + api.id + '/list/create', {
-        name: 'Nový List',
-      });
-    }
-  };
+    const selectShoppingList = (index) => {
+        shoppingListsPrefs.setSelected(index);
+    };
 
-  const name = user?.user_name ?? 'Name';
-  const surname = '';
+    const username = user.user_name;
+    const dateJoined = user.createdAt;
 
-  const dateJoined = user?.createdAt; //'20. Lis 2023';
-
-  const selectedList = 1;
-  const shoppingListNamess = [];
-  for (let i = 0; i < 50; i++) {
-    shoppingListNamess.push(`Nákup ${i}`);
-  }
-
-  const shoppingLists = shoppingListNamess.map((shoppingListName, index) => (
-    <ListItemButton sx={{ fontWeight: index == selectedList ? 'bold' : 'normal' }}>
-      {shoppingListName}
-    </ListItemButton>
-  ));
-
-  return (
-    <>
-      <DialogTitle>
-        <ModalClose size="lg" />
-        Nákupní listy
-        <Button onClick={addNewList} variant="solid" size="md">
-          Nový list
-        </Button>
-      </DialogTitle>
-      <DialogContent>
-        <List
-          size="lg"
-          component="nav"
-          sx={{
-            flex: 'none',
-            fontSize: 'xl',
-            '& > div': { justifyContent: 'left' },
-          }}
+    const selectedList = shoppingListsPrefs.selected;
+    const shoppingListsDom = shoppingLists.map((shoppingList, index) => (
+        <ListItemButton
+            key={shoppingList.id}
+            sx={{ fontWeight: index == selectedList ? 'bold' : 'normal' }}
+            onClick={() => selectShoppingList(index)}
         >
-          {shoppingLists}
-        </List>
-      </DialogContent>
-      <Box
-        sx={{
-          display: 'flex',
-          gap: 1,
-          p: 1.5,
-          pb: 2,
-          borderTop: '1px solid',
-          borderColor: 'divider',
-        }}
-      >
-        <Avatar size="lg" />
-        <Stack flexGrow="1" direction="row" justifyContent="space-between" useFlexGap spacing={1}>
-          <div>
-            <Typography level="title-md">
-              {name} {surname}
-            </Typography>
-            <Typography level="body-sm">
-              od <DateFormatter date={dateJoined} />
-            </Typography>
-          </div>
-          <Button variant="outlined">Odhlasit se </Button>
-        </Stack>
-      </Box>
-    </>
-  );
+            {shoppingList.name}
+        </ListItemButton>
+    ));
+
+    return (
+        <>
+            <DialogTitle>
+                <ModalClose size="lg" />
+                Nákupní listy
+                <Button onClick={addNewList} variant="solid" size="md">
+                    Nový list
+                </Button>
+            </DialogTitle>
+            <DialogContent>
+                <List
+                    size="lg"
+                    component="nav"
+                    sx={{
+                        flex: 'none',
+                        fontSize: 'xl',
+                        '& > div': { justifyContent: 'left' },
+                    }}
+                >
+                    {shoppingListsDom}
+                    {shoppingLists.length == 0 && (
+                        <ListItemButton>Žádné nákupní listy</ListItemButton>
+                    )}
+                </List>
+            </DialogContent>
+            <Box
+                sx={{
+                    display: 'flex',
+                    gap: 1,
+                    p: 1.5,
+                    pb: 2,
+                    borderTop: '1px solid',
+                    borderColor: 'divider',
+                }}
+            >
+                <Avatar size="lg" />
+                <Stack
+                    flexGrow="1"
+                    direction="row"
+                    justifyContent="space-between"
+                    useFlexGap
+                    spacing={1}
+                >
+                    <div>
+                        <Typography level="title-md">{username}</Typography>
+                        <Typography level="body-sm">
+                            od <DateFormatter date={dateJoined} />
+                        </Typography>
+                    </div>
+                    <Button variant="outlined">Odhlasit se </Button>
+                </Stack>
+            </Box>
+        </>
+    );
 }
 
 export default SidebarContent;

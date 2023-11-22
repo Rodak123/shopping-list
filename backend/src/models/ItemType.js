@@ -2,12 +2,12 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../connection');
 
 const ItemType = sequelize.define('Item_Type', {
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    min: 0,
-    max: 60,
-  },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        min: 0,
+        max: 60,
+    },
 });
 
 module.exports = ItemType;
