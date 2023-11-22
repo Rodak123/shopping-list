@@ -11,22 +11,29 @@ import Typography from '@mui/joy/Typography';
 import Button from '@mui/joy/Button';
 import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
+import {
+  Add,
+  HdrPlusOutlined,
+  PlusOneOutlined,
+  ShoppingBagOutlined,
+  ShoppingBasketOutlined,
+} from '@mui/icons-material';
+import Autocomplete from '@mui/joy/Autocomplete';
 
-export default function CreditCardForm() {
+function ItemPopup() {
   return (
     <Card
       variant="outlined"
       sx={{
         maxHeight: 'max-content',
         maxWidth: '100%',
+        margin: '0 !important',
         mx: 'auto',
-        // to make the demo resizable
-        overflow: 'auto',
-        resize: 'horizontal',
+        overflow: 'hidden',
       }}
     >
-      <Typography level="title-lg" startDecorator={<InfoOutlined />}>
-        Add new card
+      <Typography level="title-lg" startDecorator={<Add />}>
+        Přidat položku
       </Typography>
       <Divider inset="none" />
       <CardContent
@@ -37,28 +44,20 @@ export default function CreditCardForm() {
         }}
       >
         <FormControl sx={{ gridColumn: '1/-1' }}>
-          <FormLabel>Card number</FormLabel>
-          <Input endDecorator={<CreditCardIcon />} />
+          <FormLabel>Název položky</FormLabel>
+          <Autocomplete
+            options={['Pivo', 'Víno', 'Vodka', 'Rum', 'Whisky', 'Tequila', 'Gin', 'Jiné']}
+            placeholder="Název položky"
+          />
         </FormControl>
-        <FormControl>
-          <FormLabel>Expiry date</FormLabel>
-          <Input endDecorator={<CreditCardIcon />} />
-        </FormControl>
-        <FormControl>
-          <FormLabel>CVC/CVV</FormLabel>
-          <Input endDecorator={<InfoOutlined />} />
-        </FormControl>
-        <FormControl sx={{ gridColumn: '1/-1' }}>
-          <FormLabel>Card holder name</FormLabel>
-          <Input placeholder="Enter cardholder's full name" />
-        </FormControl>
-        <Checkbox label="Save card" sx={{ gridColumn: '1/-1', my: 1 }} />
         <CardActions sx={{ gridColumn: '1/-1' }}>
           <Button variant="solid" color="primary">
-            Add card
+            Přidat
           </Button>
         </CardActions>
       </CardContent>
     </Card>
   );
 }
+
+export default ItemPopup;

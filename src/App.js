@@ -5,6 +5,7 @@ import Header from './components/Header';
 import CartAdd from './components/CartAdd.js';
 import ItemAdd from './components/ItemAdd.js';
 import CartName from './components/CartName.js';
+import ItemPopup from './components/ItemPopup.js';
 
 function App() {
   return (

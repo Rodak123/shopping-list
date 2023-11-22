@@ -1,14 +1,29 @@
+import * as React from 'react';
 import Box from '@mui/joy/Box';
 import Button from '@mui/joy/Button';
-import { ReactComponent as Plus } from '../assets/images/plus.svg';
+import Modal from '@mui/joy/Modal';
+import ModalClose from '@mui/joy/ModalClose';
+import ItemPopup from './ItemPopup';
+import { ModalDialog } from '@mui/joy';
 
 function ItemAdd() {
+  const [open, setOpen] = React.useState(false);
   return (
     <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-      <Button variant="solid" size="lg">
+      <Button variant="solid" size="lg" onClick={() => setOpen(true)}>
         Nová položka
-        <Plus style={{ width: '12px', height: '12px', marginLeft: '5px' }} />
       </Button>
+      <Modal open={open} onClose={() => setOpen(false)}>
+        <ModalDialog
+          layout="center"
+          size="lg"
+          sx={{
+            padding: 0,
+          }}
+        >
+          <ItemPopup />
+        </ModalDialog>
+      </Modal>
     </Box>
   );
 }
