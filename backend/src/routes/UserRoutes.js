@@ -7,5 +7,6 @@ router.get('/:id', UserController.getUserById);
 
 router.put('/:id/list/create', UserController.createNewList);
 router.get('/:id/list', UserController.getAllLists);
+router.get('/:id/list/:list_id', UserController.getListById);
 
 module.exports = router;

@@ -16,7 +16,7 @@ import DateFormatter from '../DateFormatter';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-function SidebarContent() {
+function SidebarContent({ setOpen }) {
     const { api } = useApi();
     const { shoppingListsPrefs } = usePreferences();
     const [user, setUser] = useState(null);
@@ -51,29 +51,32 @@ function SidebarContent() {
                 .then(function (res) {
                     if (res.data) {
                         setShoppingLists([...shoppingLists, res.data]);
-                        selectShoppingList(shoppingLists.length);
+                        selectShoppingList(shoppingLists.length + 1);
                     }
                 });
         }
     };
 
-    const selectShoppingList = (index) => {
-        shoppingListsPrefs.setSelected(index);
+    const selectShoppingList = (id) => {
+        shoppingListsPrefs.setSelectedId(id);
+        setOpen(false);
     };
 
     const username = user.user_name;
     const dateJoined = user.createdAt;
 
-    const selectedList = shoppingListsPrefs.selected;
-    const shoppingListsDom = shoppingLists.map((shoppingList, index) => (
-        <ListItemButton
-            key={shoppingList.id}
-            sx={{ fontWeight: index == selectedList ? 'bold' : 'normal' }}
-            onClick={() => selectShoppingList(index)}
-        >
-            {shoppingList.name}
-        </ListItemButton>
-    ));
+    const selectedList = shoppingListsPrefs.selectedId;
+    const shoppingListsDom = shoppingLists.map((shoppingList) => {
+        return (
+            <ListItemButton
+                key={shoppingList.id}
+                sx={{ fontWeight: shoppingList.id == selectedList ? 'bold' : 'normal' }}
+                onClick={() => selectShoppingList(shoppingList.id)}
+            >
+                {shoppingList.name}
+            </ListItemButton>
+        );
+    });
 
     return (
         <>
