@@ -19,6 +19,7 @@ import {
   ShoppingBasketOutlined,
 } from '@mui/icons-material';
 import Autocomplete from '@mui/joy/Autocomplete';
+import ModalClose from '@mui/joy/ModalClose';
 
 function ItemPopup() {
   return (
@@ -32,14 +33,13 @@ function ItemPopup() {
         overflow: 'hidden',
       }}
     >
-      <Typography level="title-lg" startDecorator={<Add />}>
-        Přidat položku
-      </Typography>
+      <Typography level="title-lg">Přidat položku</Typography>
+      <ModalClose variant="plain" sx={{ m: 0 }} />
       <Divider inset="none" />
       <CardContent
         sx={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(2, minmax(80px, 1fr))',
+          gridTemplateColumns: 'repeat(3, minmax(80px, 1fr))',
           gap: 1.5,
         }}
       >
@@ -49,6 +49,10 @@ function ItemPopup() {
             options={['Pivo', 'Víno', 'Vodka', 'Rum', 'Whisky', 'Tequila', 'Gin', 'Jiné']}
             placeholder="Název položky"
           />
+        </FormControl>
+        <FormControl sx={{ gridColumn: '1/-1' }}>
+          <FormLabel>Popis položky</FormLabel>
+          <Input placeholder="Popis položky" />
         </FormControl>
         <CardActions sx={{ gridColumn: '1/-1' }}>
           <Button variant="solid" color="primary">
