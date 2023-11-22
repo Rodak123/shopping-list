@@ -18,6 +18,7 @@ import axios from 'axios';
 function SidebarContent() {
   const { api } = useApi();
   const [user, setUser] = useState(null);
+  const [lists, setLists] = useState([]);
 
   useEffect(() => {
     if (api !== null) {
@@ -26,8 +27,22 @@ function SidebarContent() {
           setUser(res.data);
         }
       });
+
+      axios.get(api.url + '/user/' + api.id + '/list').then(function (res) {
+        if (res.data) {
+          setLists(res.data);
+        }
+      });
     }
   }, [api]);
+
+  const addNewList = () => {
+    if (api !== null) {
+      axios.put(api.url + '/user/' + api.id + '/list/create', {
+        name: 'Nový List',
+      });
+    }
+  };
 
   const name = user?.user_name ?? 'Name';
   const surname = '';
@@ -48,8 +63,13 @@ function SidebarContent() {
 
   return (
     <>
-      <ModalClose size="lg" />
-      <DialogTitle>Nákupní košíky</DialogTitle>
+      <DialogTitle>
+        <ModalClose size="lg" />
+        Nákupní listy
+        <Button onClick={addNewList} variant="solid" size="md">
+          Nový list
+        </Button>
+      </DialogTitle>
       <DialogContent>
         <List
           size="lg"
