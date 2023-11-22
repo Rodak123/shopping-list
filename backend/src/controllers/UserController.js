@@ -9,6 +9,17 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+const getUserById = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const user = await User.findByPk(id);
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching user' });
+  }
+};
+
 module.exports = {
   getAllUsers: getAllUsers,
+  getUserById: getUserById,
 };

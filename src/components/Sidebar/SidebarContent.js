@@ -6,17 +6,33 @@ import {
   Typography,
   ModalClose,
   DialogTitle,
-  Divider,
   DialogContent,
   Avatar,
   Stack,
 } from '@mui/joy';
+import { useApi } from '../../contexts/ApiContext';
+import DateFormatter from '../DateFormatter';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 function SidebarContent() {
-  const name = 'Petr';
-  const surname = 'Novák';
+  const { api } = useApi();
+  const [user, setUser] = useState(null);
 
-  const dateJoined = '20. Lis 2023';
+  useEffect(() => {
+    if (api !== null) {
+      axios.get(api.url + '/user/' + api.id).then(function (res) {
+        if (res.data) {
+          setUser(res.data);
+        }
+      });
+    }
+  }, [api]);
+
+  const name = user?.user_name ?? 'Name';
+  const surname = '';
+
+  const dateJoined = user?.createdAt; //'20. Lis 2023';
 
   const selectedList = 1;
   const shoppingListNamess = [];
@@ -33,27 +49,15 @@ function SidebarContent() {
   return (
     <>
       <ModalClose size="lg" />
-      <DialogTitle>Title</DialogTitle>
+      <DialogTitle>Nákupní košíky</DialogTitle>
       <DialogContent>
-        <Typography
-          textAlign="center"
-          fontWeight="lg"
-          sx={{
-            flex: 'none',
-            fontSize: 'xl',
-            '& > div': { justifyContent: 'center' },
-          }}
-        >
-          Nákupní košíky
-        </Typography>
-        <Divider />
         <List
           size="lg"
           component="nav"
           sx={{
             flex: 'none',
             fontSize: 'xl',
-            '& > div': { justifyContent: 'center' },
+            '& > div': { justifyContent: 'left' },
           }}
         >
           {shoppingLists}
@@ -75,7 +79,9 @@ function SidebarContent() {
             <Typography level="title-md">
               {name} {surname}
             </Typography>
-            <Typography level="body-sm">od {dateJoined}</Typography>
+            <Typography level="body-sm">
+              od <DateFormatter date={dateJoined} />
+            </Typography>
           </div>
           <Button variant="outlined">Odhlasit se </Button>
         </Stack>

@@ -28,6 +28,12 @@ const ItemCategory = require('./models/ItemCategory');
   //await sequelize.sync({ force: process.env.NODE_ENV === 'development' ? true : false });
   await sequelize.sync({ force: true }); // Use { force: true } only during development
   console.log('Tables created!');
+
+  User.create({
+    user_name: 'JohnDoe',
+  }).then(function () {
+    console.log('Added John');
+  });
 })();
 
 const app = express();
