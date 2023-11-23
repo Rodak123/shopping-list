@@ -1,9 +1,8 @@
 import { Typography } from '@mui/joy';
 import Box from '@mui/joy/Box';
 import { usePreferences } from '../contexts/PreferencesContext';
-import { useEffect, useState } from 'react';
 
-function CartName() {
+function ShoppingListName() {
     const { shoppingListsPrefs } = usePreferences();
 
     return (
@@ -25,4 +24,4 @@ function CartName() {
         </Box>
     );
 }
-export default CartName;
+export default ShoppingListName;
