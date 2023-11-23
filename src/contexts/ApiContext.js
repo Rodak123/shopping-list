@@ -1,9 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import axios from 'axios';
 
 const ApiContext = createContext();
 
 export const ApiProvider = ({ children }) => {
   const [api, setApi] = useState(null);
+  const [apiLoaded, setApiLoaded] = useState(false);
 
   useEffect(() => {
     if (api === null) {
@@ -16,7 +18,24 @@ export const ApiProvider = ({ children }) => {
     }
   }, [api]);
 
-  return <ApiContext.Provider value={{ api }}>{children}</ApiContext.Provider>;
+  useEffect(() => {
+    if (apiLoaded === false && api !== null) {
+      axios
+        .get(api.url + '/user/' + api.id)
+        .then(function (res) {
+          if (res.data) {
+            setApiLoaded(true);
+            api.id = res.data.id;
+          }
+        })
+        .catch(function (error) {
+          setApiLoaded(false);
+          console.log(error);
+        });
+    }
+  }, [apiLoaded, api]);
+
+  return <ApiContext.Provider value={{ api, apiLoaded }}>{children}</ApiContext.Provider>;
 };
 
 export const useApi = () => {

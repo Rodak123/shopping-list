@@ -1,6 +1,10 @@
-import { Stack } from '@mui/joy';
+import { Stack, Typography } from '@mui/joy';
 import './App.css';
 import Header from './components/Header';
+import ItemAdd from './components/ItemAdd.js';
+import CartName from './components/CartName.js';
+import ItemPopup from './components/ItemPopup.js';
+import { useApi } from './contexts/ApiContext';
 import ItemAdd from './components/ItemAdd';
 import ShoppingListName from './components/ShoppingListName';
 import { ApiProvider } from './contexts/ApiContext';
@@ -11,17 +15,15 @@ function App() {
     return (
         <>
             <ApiProvider>
-                <PreferencesProvider>
-                    <div className="App">
-                        <Stack direction="column" spacing={2}>
-                            <Header />
-                            <Stack direction="row" spacing={2} justifyContent="center">
-                                <ShoppingListName />
-                                <ItemAdd />
-                            </Stack>
+                <div className="App">
+                    <Stack direction="column" spacing={2}>
+                        <Header />
+                        <Stack direction="row" spacing={2} justifyContent="center">
+                            <CartName />
+                            <ItemAdd />
                         </Stack>
-                    </div>
-                </PreferencesProvider>
+                    </Stack>
+                </div>
             </ApiProvider>
         </>
     );
