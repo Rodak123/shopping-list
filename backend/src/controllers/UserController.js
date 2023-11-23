@@ -22,7 +22,7 @@ const getUserById = async (req, res) => {
 };
 
 const createNewList = async (req, res) => {
-    const id = req.params.id;
+    const { id } = req.params;
     const listData = req.body;
     if (!listData.name) {
         return res.status(400).json({ message: 'Name is required', error: error });
@@ -38,7 +38,7 @@ const createNewList = async (req, res) => {
             name: listData.name,
         });
 
-        await user.addShopping_List(shoppingList);
+        await user.addShoppingList(shoppingList);
 
         res.status(201).json(shoppingList.toJSON());
     } catch (error) {
@@ -48,9 +48,9 @@ const createNewList = async (req, res) => {
 };
 
 const getAllLists = async (req, res) => {
-    const userId = req.params.id;
+    const { id } = req.params;
     try {
-        const user = await User.findByPk(userId, {
+        const user = await User.findByPk(id, {
             include: ShoppingList,
         });
 
@@ -59,17 +59,16 @@ const getAllLists = async (req, res) => {
             return;
         }
 
-        res.status(200).json(user.Shopping_Lists);
+        res.status(200).json(user.ShoppingLists);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching lists', error: error });
     }
 };
 
 const getListById = async (req, res) => {
-    const userId = req.params.id;
-    const listId = req.params.list_id;
+    const { id, list_id } = req.params;
     try {
-        const user = await User.findByPk(userId, {
+        const user = await User.findByPk(id, {
             include: ShoppingList,
         });
 
@@ -78,7 +77,7 @@ const getListById = async (req, res) => {
             return;
         }
 
-        const list = user.Shopping_Lists.find((list) => list.id == listId);
+        const list = user.ShoppingLists.find((list) => list.id == list_id);
 
         if (!list) {
             res.status(404).json({ message: 'List not found' });

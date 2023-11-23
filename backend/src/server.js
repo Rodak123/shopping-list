@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 
+const Sequelize = require('sequelize');
 const sequelize = require('./connection');
 
 const User = require('./models/User');
@@ -9,49 +10,97 @@ const Item = require('./models/Item');
 const ItemType = require('./models/ItemType');
 const ItemCategory = require('./models/ItemCategory');
 
+const loadProductTaxonomy = require('../loadProductTaxonomy');
+
 (async () => {
-  User.belongsToMany(ShoppingList, { through: 'UserShoppingList' });
-  ShoppingList.belongsToMany(User, { through: 'UserShoppingList' });
+    User.belongsToMany(ShoppingList, { through: 'UserShoppingList' });
+    ShoppingList.belongsToMany(User, { through: 'UserShoppingList' });
 
-  ShoppingList.hasMany(Item, { foreignKey: 'shopping_list_id', as: 'items' });
-  Item.belongsTo(ShoppingList, { foreignKey: 'shopping_list_id', allowNull: false });
+    ShoppingList.hasMany(Item, { foreignKey: 'shopping_list_id' });
+    Item.belongsTo(ShoppingList, { foreignKey: 'shopping_list_id', allowNull: false });
 
-  ItemType.hasMany(Item, { foreignKey: 'item_type_id', as: 'item_types' });
-  Item.belongsTo(ItemType, { foreignKey: 'item_type_id', allowNull: false });
+    ItemType.hasMany(Item, { foreignKey: 'item_type_id' });
+    Item.belongsTo(ItemType, { foreignKey: 'item_type_id', allowNull: false });
 
-  ItemCategory.hasMany(ItemType, { foreignKey: 'item_category_id', as: 'item_categories' });
-  ItemType.belongsTo(ItemCategory, { foreignKey: 'item_category_id', allowNull: false });
+    ItemCategory.hasMany(ItemType, { foreignKey: 'item_category_id' });
+    ItemType.belongsTo(ItemCategory, { foreignKey: 'item_category_id', allowNull: false });
 
-  ItemCategory.hasMany(ItemCategory, { foreignKey: 'parent_category_id', as: 'parent_categories' });
-  ItemCategory.belongsTo(ItemCategory, { foreignKey: 'parent_category_id', allowNull: true });
+    ItemCategory.hasMany(ItemCategory, {
+        foreignKey: 'parent_category_id',
+    });
+    ItemCategory.belongsTo(ItemCategory, { foreignKey: 'parent_category_id', allowNull: true });
 
-  //await sequelize.sync({ force: process.env.NODE_ENV === 'development' ? true : false });
-  await sequelize.sync({ force: true }); // Use { force: true } only during development
-  console.log('Tables created!');
+    const forceCreate = true; // Only during dev
 
-  User.create({
-    user_name: 'JohnDoe',
-  }).then(function () {
-    console.log('Added John');
-  });
+    await sequelize.sync({ force: forceCreate });
+    console.log('Tables created!');
+
+    // ---
+    // Load data
+    if (forceCreate) {
+        const taxonomy = await loadProductTaxonomy('./product_type_taxonomy.xml');
+        const addAll = async (root) => {
+            const self = root['$'];
+            const categories = root['Category'];
+            const items = root['Item'];
+
+            let rootCategory = null;
+            if (self) {
+                rootCategory = await ItemCategory.create({
+                    name: self['name'],
+                });
+            }
+
+            if (items) {
+                await items.forEach(async (item) => {
+                    const type = await ItemType.create({
+                        name: item,
+                    });
+
+                    if (rootCategory !== null) {
+                        rootCategory.addItemType(type);
+                    }
+                });
+            }
+
+            if (categories) {
+                await categories.forEach(async (categoryData) => {
+                    const category = await addAll(categoryData);
+                    if (category !== null && rootCategory !== null) {
+                        rootCategory.addItemCategory(category);
+                    }
+                });
+            }
+
+            return rootCategory;
+        };
+        await addAll(taxonomy['Root']);
+
+        console.log('Taxonomy loaded!');
+
+        await User.create({
+            user_name: 'JohnDoe',
+        });
+        console.log('Added John!');
+    }
 })();
 
 const app = express();
 const PORT = process.env.PORT || 3100;
 
 app.use(
-  cors({
-    origin: 'http://localhost:3000',
-    methods: 'GET,POST,PUT,DELETE',
-    credentials: true,
-  })
+    cors({
+        origin: 'http://localhost:3000',
+        methods: 'GET,POST,PUT,DELETE',
+        credentials: true,
+    })
 );
 
 app.use(express.json());
 
 app.use((req, res, next) => {
-  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
-  next();
+    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+    next();
 });
 
 const userRoutes = require('./routes/UserRoutes');
@@ -70,15 +119,15 @@ app.use('/item/category', itemCategoryRoutes);
 app.use('/test', testRoutes);
 
 app.get('/', (req, res) => {
-  res.send('This is the shopping-list API!');
+    res.send('This is the shopping-list API!');
 });
 
 app.listen(PORT, () => {
-  console.log(`Backend server listening on port ${PORT}`);
+    console.log(`Backend server listening on port ${PORT}`);
 });
 
 process.on('exit', (code) => {
-  sequelize.close().then((r) => () => {
-    server.close();
-  });
+    sequelize.close().then((r) => () => {
+        server.close();
+    });
 });

@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../connection');
 
-const ItemType = sequelize.define('Item_Type', {
+const ItemType = sequelize.define('ItemType', {
     name: {
         type: DataTypes.STRING,
         allowNull: false,
