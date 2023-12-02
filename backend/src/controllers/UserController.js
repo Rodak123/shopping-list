@@ -1,3 +1,4 @@
+const e = require('express');
 const ShoppingList = require('../models/ShoppingList');
 const User = require('../models/User');
 
@@ -90,10 +91,152 @@ const getListById = async (req, res) => {
     }
 };
 
+const renameList = async (req, res) => {
+    const { id, list_id } = req.params;
+    const { name } = req.body;
+    if (!name) {
+        res.status(400).json({ message: 'New name is required' });
+        return;
+    }
+    try {
+        const user = await User.findByPk(id, {
+            include: ShoppingList,
+        });
+
+        if (!user) {
+            res.status(404).json({ message: 'User not found' });
+            return;
+        }
+
+        const list = user.ShoppingLists.find((list) => list.id == list_id);
+
+        if (!list) {
+            res.status(404).json({ message: 'List not found' });
+            return;
+        }
+
+        list.name = name;
+
+        await list.save();
+
+        res.status(200).json(list);
+    } catch (error) {
+        res.status(500).json({ message: 'Error renaming list', error: error });
+    }
+};
+
+const deleteList = async (req, res) => {
+    const { id, list_id } = req.params;
+    try {
+        const user = await User.findByPk(id, {
+            include: ShoppingList,
+        });
+
+        if (!user) {
+            res.status(404).json({ message: 'User not found' });
+            return;
+        }
+
+        const list = user.ShoppingLists.find((list) => list.id == list_id);
+
+        if (!list) {
+            res.status(404).json({ message: 'List not found' });
+            return;
+        }
+
+        await list.destroy();
+
+        res.status(200).json(list);
+    } catch (error) {
+        res.status(400).json({ message: 'Error deleting list', error: error });
+    }
+};
+
+const createNewItemInList = async (req, res) => {
+    const { id, list_id } = req.params;
+    const { note, quantity, type_id } = req.body;
+    if (!note || !quantity || !type_id) {
+        res.status(400).json({ message: 'Note, quantity, and type are required' });
+        return;
+    }
+    try {
+        const user = await User.findByPk(id, {
+            include: ShoppingList,
+        });
+
+        if (!user) {
+            res.status(404).json({ message: 'User not found' });
+            return;
+        }
+
+        const list = user.ShoppingLists.find((list) => list.id == list_id);
+
+        if (!list) {
+            res.status(404).json({ message: 'List not found' });
+            return;
+        }
+
+        const item = await list.createItem({
+            note: note,
+            quantity: quantity,
+        });
+
+        const type = await ItemType.findByPk(type_id);
+
+        if (!type) {
+            res.status(404).json({ message: 'Type not found' });
+            return;
+        }
+
+        await item.setItemType(type);
+
+        await item.save();
+
+        await list.addItem(item);
+
+        res.status(201).json(item);
+    } catch (error) {
+        res.status(500).json({ message: 'Error creating new item', error: error });
+    }
+};
+
+const getAllListItems = async (req, res) => {
+    const { id, list_id } = req.params;
+    try {
+        const user = await User.findByPk(id, {
+            include: ShoppingList,
+        });
+
+        if (!user) {
+            res.status(404).json({ message: 'User not found' });
+            return;
+        }
+
+        const list = user.ShoppingLists.find((list) => list.id == list_id);
+
+        if (!list) {
+            res.status(404).json({ message: 'List not found' });
+            return;
+        }
+
+        const items = await list.getItems();
+
+        res.status(200).json(items);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching items', error: error });
+    }
+};
+
 module.exports = {
     getAllUsers: getAllUsers,
     getUserById: getUserById,
+
     createNewList: createNewList,
     getAllLists: getAllLists,
     getListById: getListById,
+    renameList: renameList,
+    deleteList: deleteList,
+
+    createNewItemInList: createNewItemInList,
+    getAllListItems: getAllListItems,
 };
