@@ -10,10 +10,10 @@ import {
     Avatar,
     Stack,
 } from '@mui/joy';
-import { useApi } from '../../contexts/ApiContext';
 import { usePreferences } from '../../contexts/PreferencesContext';
 import DateFormatter from '../DateFormatter';
 import { useEffect, useState } from 'react';
+import { useApi } from '../../contexts/ApiContext';
 import axios from 'axios';
 
 function SidebarContent({ setOpen }) {

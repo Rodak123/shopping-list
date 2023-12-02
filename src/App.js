@@ -6,6 +6,7 @@ import ItemAdd from './components/ItemAdd';
 import { ApiProvider } from './contexts/ApiContext';
 import { PreferencesProvider } from './contexts/PreferencesContext';
 import { useApi } from './contexts/ApiContext';
+import CardDemo from './components/CardDemo';
 
 function App() {
     const { apiLoaded } = useApi();
@@ -26,6 +27,7 @@ function App() {
                                 <ItemAdd />
                             </Stack>
                         </Stack>
+                        <CardDemo />
                     </div>
                 </PreferencesProvider>
             </ApiProvider>
