@@ -1,9 +1,20 @@
-import { Typography } from '@mui/joy';
+import { Typography, Dropdown, Menu, IconButton, MenuButton, MenuItem } from '@mui/joy';
 import Box from '@mui/joy/Box';
 import { usePreferences } from '../contexts/PreferencesContext';
+import MoreVert from '@mui/icons-material/MoreVert';
 
 function ShoppingListName() {
     const { shoppingListsPrefs } = usePreferences();
+
+    const isSelectedShoppingList = shoppingListsPrefs.selected !== null;
+
+    const deleteList = () => {
+        console.log('Delete list'); // TODO
+    };
+
+    const renameList = () => {
+        console.log('Rename list'); // TODO
+    };
 
     return (
         <Box
@@ -14,13 +25,29 @@ function ShoppingListName() {
                 borderRadius: '6px',
                 backgroundColor: 'lightgrey',
                 padding: '10.5px',
+                alignContent: 'center',
             }}
         >
-            <Typography>
-                {shoppingListsPrefs.selected === null
-                    ? 'Není vybrán žádný list'
-                    : shoppingListsPrefs.selected.name}
+            <Typography
+                sx={{
+                    marginY: '8px',
+                }}
+            >
+                {isSelectedShoppingList
+                    ? shoppingListsPrefs.selected.name
+                    : 'Není vybrán žádný list'}
             </Typography>
+            {isSelectedShoppingList && (
+                <Dropdown>
+                    <MenuButton slots={{ root: IconButton }} size="sm">
+                        <MoreVert />
+                    </MenuButton>
+                    <Menu>
+                        <MenuItem onClick={deleteList}>Smazat</MenuItem>
+                        <MenuItem onClick={renameList}>Přejmenovat</MenuItem>
+                    </Menu>
+                </Dropdown>
+            )}
         </Box>
     );
 }
