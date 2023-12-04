@@ -55,7 +55,7 @@ function ItemPopup() {
                         shoppingListsPrefs.selectedId +
                         '/item/create',
                     {
-                        type_id: selectedItem,
+                        type_id: selectedItem.id,
                         note: itemNote,
                         quantity: itemQuantity,
                     }
