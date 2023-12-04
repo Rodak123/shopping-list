@@ -23,11 +23,16 @@ import ModalClose from '@mui/joy/ModalClose';
 import { useApi } from '../contexts/ApiContext';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { Stack } from '@mui/material';
+import { usePreferences } from '../contexts/PreferencesContext';
 
 function ItemPopup() {
     const { api } = useApi();
+    const { shoppingListsPrefs } = usePreferences();
     const [types, setTypes] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
+    const [itemNote, setItemNote] = useState('');
+    const [itemQuantity, setItemQuantity] = useState(1);
 
     useEffect(() => {
         if (api !== null) {
@@ -41,17 +46,25 @@ function ItemPopup() {
 
     const addItem = () => {
         if (api !== null && selectedItem !== null) {
-            // axios
-            //     .put(api.url + '/item/create', {
-            //         name: selectedItem,
-            //         description: 'Popis nové položky',
-            //         type: 1,
-            //     })
-            //     .then(function (res) {
-            //         if (res.data) {
-            //             console.log(res.data);
-            //         }
-            //     });
+            axios
+                .put(
+                    api.url +
+                        '/user/' +
+                        api.id +
+                        '/list/' +
+                        shoppingListsPrefs.selectedId +
+                        '/item/create',
+                    {
+                        type_id: selectedItem,
+                        note: itemNote,
+                        quantity: itemQuantity,
+                    }
+                )
+                .then(function (res) {
+                    if (res.data) {
+                        console.log(res.data);
+                    }
+                });
         }
     };
     console.log(selectedItem);
@@ -100,10 +113,25 @@ function ItemPopup() {
                         }}
                     />
                 </FormControl>
-                <FormControl sx={{ gridColumn: '1/-1' }}>
-                    <FormLabel>Popis položky</FormLabel>
-                    <Input placeholder="Popis položky" />
-                </FormControl>
+                <Stack direction="row" spacing={1} sx={{ gridColumn: '1/-1' }}>
+                    <FormControl sx={{ gridColumn: '1/-1' }}>
+                        <FormLabel>Popis položky</FormLabel>
+                        <Input
+                            placeholder="Popis položky"
+                            value={itemNote}
+                            onChange={(event) => setItemNote(event.target.value)}
+                        />
+                    </FormControl>
+                    <FormControl sx={{ gridColumn: '1/-1' }}>
+                        <FormLabel>Počet položky</FormLabel>
+                        <Input
+                            placeholder="Počet položky"
+                            type="number"
+                            value={itemQuantity}
+                            onChange={(event) => setItemQuantity(event.target.value)}
+                        />
+                    </FormControl>
+                </Stack>
                 <CardActions sx={{ gridColumn: '1/-1' }}>
                     <Button variant="solid" color="primary" onClick={addItem}>
                         Přidat
