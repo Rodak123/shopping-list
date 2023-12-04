@@ -83,11 +83,18 @@ function SidebarContent({ setOpen }) {
             <DialogTitle>
                 <ModalClose size="lg" />
                 Nákupní listy
-                <Button onClick={addNewList} variant="solid" size="md">
-                    Nový list
-                </Button>
             </DialogTitle>
             <DialogContent>
+                <Button
+                    onClick={addNewList}
+                    variant="solid"
+                    size="md"
+                    sx={{
+                        borderRadius: '0',
+                    }}
+                >
+                    Nový list
+                </Button>
                 <List
                     size="lg"
                     component="nav"
