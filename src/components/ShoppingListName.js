@@ -3,8 +3,11 @@ import Box from '@mui/joy/Box';
 import { usePreferences } from '../contexts/PreferencesContext';
 import MoreVert from '@mui/icons-material/MoreVert';
 import { useState } from 'react';
+import axios from 'axios';
+import { useApi } from '../contexts/ApiContext';
 
 function ShoppingListName() {
+    const { api } = useApi();
     const { shoppingListsPrefs } = usePreferences();
 
     const [renamingShoppingList, setRenamingShoppingList] = useState(false);
@@ -13,12 +16,32 @@ function ShoppingListName() {
     const isSelectedShoppingList = shoppingListsPrefs.selected !== null;
 
     const deleteList = () => {
-        console.log('Delete list'); // TODO
+        if (!isSelectedShoppingList) return;
+        axios
+            .delete(
+                api.url + '/user/' + api.id + '/list/' + shoppingListsPrefs.selectedId + '/delete'
+            )
+            .then(function (res) {
+                if (res.status === 200) shoppingListsPrefs.setSelectedId(-1);
+            });
     };
 
     const renameList = () => {
-        setRenamingShoppingList(true);
-        console.log('Rename list'); // TODO
+        if (!isSelectedShoppingList) return;
+        axios
+            .put(
+                api.url + '/user/' + api.id + '/list/' + shoppingListsPrefs.selectedId + '/rename',
+                {
+                    name: newShoppingListName,
+                }
+            )
+            .then(function (res) {
+                if (res.status === 200) {
+                    shoppingListsPrefs.selected.name = newShoppingListName;
+                    setNewShoppingListName('');
+                    setRenamingShoppingList(false);
+                }
+            });
     };
 
     return (
@@ -34,7 +57,12 @@ function ShoppingListName() {
             }}
         >
             {renamingShoppingList ? (
-                <form>
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        renameList();
+                    }}
+                >
                     <Input
                         value={newShoppingListName}
                         onChange={(e) => setNewShoppingListName(e.target.value)}
@@ -62,7 +90,13 @@ function ShoppingListName() {
                             </MenuButton>
                             <Menu>
                                 <MenuItem onClick={deleteList}>Smazat</MenuItem>
-                                <MenuItem onClick={renameList}>Přejmenovat</MenuItem>
+                                <MenuItem
+                                    onClick={() => {
+                                        setRenamingShoppingList(true);
+                                    }}
+                                >
+                                    Přejmenovat
+                                </MenuItem>
                             </Menu>
                         </Dropdown>
                     )}

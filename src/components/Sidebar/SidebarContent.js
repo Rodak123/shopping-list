@@ -36,10 +36,10 @@ function SidebarContent({ setOpen }) {
                 }
             });
         }
-    }, [api]);
+    }, [api, shoppingListsPrefs.selected]);
 
     if (user === null) {
-        return <Typography>Loading...</Typography>;
+        return <Typography>Načítání...</Typography>;
     }
 
     const addNewList = () => {
@@ -51,7 +51,7 @@ function SidebarContent({ setOpen }) {
                 .then(function (res) {
                     if (res.data) {
                         setShoppingLists([...shoppingLists, res.data]);
-                        selectShoppingList(shoppingLists.length + 1);
+                        selectShoppingList(res.data.id);
                     }
                 });
         }
@@ -105,7 +105,7 @@ function SidebarContent({ setOpen }) {
                     }}
                 >
                     {shoppingListsDom}
-                    {shoppingLists.length == 0 && (
+                    {shoppingLists.length === 0 && (
                         <ListItemButton>Žádné nákupní listy</ListItemButton>
                     )}
                 </List>
