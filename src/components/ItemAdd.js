@@ -8,10 +8,15 @@ import { ModalDialog } from '@mui/joy';
 import { useState } from 'react';
 import { usePreferences } from '../contexts/PreferencesContext';
 
-function ItemAdd() {
+function ItemAdd({ refreshItems }) {
     const { shoppingListsPrefs } = usePreferences();
 
     const [open, setOpen] = useState(false);
+
+    const onClose = () => {
+        refreshItems();
+        setOpen(false);
+    };
 
     return (
         <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
@@ -23,7 +28,7 @@ function ItemAdd() {
             >
                 Nová položka
             </Button>
-            <Modal open={open} onClose={() => setOpen(false)}>
+            <Modal open={open} onClose={onClose}>
                 <ModalDialog
                     layout="center"
                     size="lg"
@@ -31,7 +36,7 @@ function ItemAdd() {
                         padding: 0,
                     }}
                 >
-                    <ItemPopup setOpen={setOpen} />
+                    <ItemPopup onClose={onClose} />
                 </ModalDialog>
             </Modal>
         </Box>

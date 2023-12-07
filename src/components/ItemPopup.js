@@ -25,8 +25,9 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Stack } from '@mui/material';
 import { usePreferences } from '../contexts/PreferencesContext';
+import Loading from './Loading';
 
-function ItemPopup({ setOpen }) {
+function ItemPopup({ onClose }) {
     const { api } = useApi();
     const { shoppingListsPrefs } = usePreferences();
     const [types, setTypes] = useState([]);
@@ -63,14 +64,31 @@ function ItemPopup({ setOpen }) {
                 .then(function (res) {
                     if (res.data) {
                         console.log(res.data);
-                        setOpen(false);
+                        onClose();
                     }
                 });
         }
     };
 
+    const cardStyle = {
+        variant: 'outlined',
+        sx: {
+            maxHeight: 'max-content',
+            maxWidth: '100%',
+            margin: '0 !important',
+            mx: 'auto',
+            overflow: 'hidden',
+        },
+    };
+
     if (types.length === 0) {
-        return <Typography>Načítání typů...</Typography>;
+        return (
+            <Card {...cardStyle}>
+                <CardContent>
+                    <Loading />
+                </CardContent>
+            </Card>
+        );
     }
     const selectTypes = [];
 
@@ -84,16 +102,7 @@ function ItemPopup({ setOpen }) {
     selectTypes.sort((a, b) => (a.label > b.label ? 1 : -1));
 
     return (
-        <Card
-            variant="outlined"
-            sx={{
-                maxHeight: 'max-content',
-                maxWidth: '100%',
-                margin: '0 !important',
-                mx: 'auto',
-                overflow: 'hidden',
-            }}
-        >
+        <Card {...cardStyle}>
             <Typography level="title-lg">Přidat položku</Typography>
             <ModalClose variant="plain" sx={{ m: 0 }} />
             <Divider inset="none" />

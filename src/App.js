@@ -23,15 +23,6 @@ function App() {
                     <div className="App">
                         <Stack direction="column" spacing={2}>
                             <Header />
-                            <Stack
-                                direction="row"
-                                spacing={2}
-                                alignContent={'center'}
-                                justifyContent={'center'}
-                            >
-                                <ShoppingListName />
-                                <ItemAdd />
-                            </Stack>
                             <ShoppingListDisplay />
                         </Stack>
                     </div>
