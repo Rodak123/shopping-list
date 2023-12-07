@@ -2,6 +2,7 @@ import { Box, Button, Modal, ModalDialog } from '@mui/joy';
 import * as React from 'react';
 import { useState } from 'react';
 import { usePreferences } from '../contexts/PreferencesContext';
+import ItemPopup from './ItemPopup';
 
 function ItemAdd({ refreshItems }) {
     const { shoppingListsPrefs } = usePreferences();
