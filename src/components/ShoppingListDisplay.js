@@ -34,17 +34,27 @@ function ShoppingListDisplay() {
     });
 
     if (isSelectedShoppingList === false) {
-        return <Typography>Není vybraný žádny nákupní list</Typography>;
+        return;
     }
 
     if (items.length === 0) {
-        return <Typography>Nejsou zde žádné položky, přidejte nějaké</Typography>;
+        return <Typography textAlign="center">Nejsou zde žádné položky</Typography>;
     }
 
     return (
-        <Stack direction={'row'} alignItems={'center'} justifyContent={'center'} spacing={2}>
-            <Stack direction={'column'}>{domItems.slice(0, domItems.length / 2)}</Stack>
-            <Stack direction={'column'}>{domItems.slice(domItems.length / 2)}</Stack>
+        <Stack
+            direction={'row'}
+            alignItems={'start'}
+            justifyContent={'center'}
+            spacing={2}
+            paddingX={2}
+        >
+            <Stack flexGrow={1} direction={'column'} spacing={2}>
+                {domItems.slice(0, domItems.length / 2)}
+            </Stack>
+            <Stack flexGrow={1} direction={'column'} spacing={2}>
+                {domItems.slice(domItems.length / 2)}
+            </Stack>
         </Stack>
     );
 }
