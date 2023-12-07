@@ -121,6 +121,7 @@ function ItemPopup({ onClose }) {
                         onChange={(event, newValue) => {
                             setSelectedItem(newValue);
                         }}
+                        isOptionEqualToValue={(option, value) => option.id === value.id}
                     />
                 </FormControl>
                 <Stack direction="row" spacing={1} sx={{ gridColumn: '1/-1' }}>
