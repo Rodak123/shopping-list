@@ -7,6 +7,7 @@ import { ApiProvider } from './contexts/ApiContext';
 import { PreferencesProvider } from './contexts/PreferencesContext';
 import { useApi } from './contexts/ApiContext';
 import CardDemo from './components/CardDemo';
+import ShoppingListDisplay from './components/ShoppingListDisplay';
 
 function App() {
     const { apiLoaded } = useApi();
@@ -22,12 +23,17 @@ function App() {
                     <div className="App">
                         <Stack direction="column" spacing={2}>
                             <Header />
-                            <Stack direction="row" spacing={2} justifyContent="center">
+                            <Stack
+                                direction="row"
+                                spacing={2}
+                                alignContent={'center'}
+                                justifyContent={'center'}
+                            >
                                 <ShoppingListName />
                                 <ItemAdd />
                             </Stack>
+                            <ShoppingListDisplay />
                         </Stack>
-                        <CardDemo />
                     </div>
                 </PreferencesProvider>
             </ApiProvider>

@@ -31,7 +31,7 @@ function ItemAdd() {
                         padding: 0,
                     }}
                 >
-                    <ItemPopup />
+                    <ItemPopup setOpen={setOpen} />
                 </ModalDialog>
             </Modal>
         </Box>

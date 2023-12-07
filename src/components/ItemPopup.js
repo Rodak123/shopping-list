@@ -26,7 +26,7 @@ import { useEffect, useState } from 'react';
 import { Stack } from '@mui/material';
 import { usePreferences } from '../contexts/PreferencesContext';
 
-function ItemPopup() {
+function ItemPopup({ setOpen }) {
     const { api } = useApi();
     const { shoppingListsPrefs } = usePreferences();
     const [types, setTypes] = useState([]);
@@ -63,11 +63,12 @@ function ItemPopup() {
                 .then(function (res) {
                     if (res.data) {
                         console.log(res.data);
+                        setOpen(false);
                     }
                 });
         }
     };
-    console.log(selectedItem);
+
     if (types.length === 0) {
         return <Typography>Načítání typů...</Typography>;
     }
