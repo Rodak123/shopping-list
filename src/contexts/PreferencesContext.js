@@ -10,7 +10,7 @@ export const PreferencesProvider = ({ children }) => {
     const [selectedShoppingListId, setSelectedShoppingListId] = useState(-1);
     const [selectedShoppingList, setSelectedShoppingList] = useState(null);
 
-    useEffect(() => {
+    const refreshSelected = () => {
         setSelectedShoppingList(null);
         if (api !== null && selectedShoppingListId !== -1) {
             axios
@@ -26,6 +26,10 @@ export const PreferencesProvider = ({ children }) => {
                     setSelectedShoppingListId(-1);
                 });
         }
+    };
+
+    useEffect(() => {
+        refreshSelected();
     }, [api, selectedShoppingListId]);
 
     return (
@@ -35,6 +39,7 @@ export const PreferencesProvider = ({ children }) => {
                     selected: selectedShoppingList,
                     selectedId: selectedShoppingListId,
                     setSelectedId: setSelectedShoppingListId,
+                    refreshSelected: refreshSelected,
                 },
             }}
         >

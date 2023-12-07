@@ -37,7 +37,7 @@ function ShoppingListName() {
             )
             .then(function (res) {
                 if (res.status === 200) {
-                    shoppingListsPrefs.selected.name = newShoppingListName;
+                    shoppingListsPrefs.refreshSelected();
                     setNewShoppingListName('');
                     setRenamingShoppingList(false);
                 }
