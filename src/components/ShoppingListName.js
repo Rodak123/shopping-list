@@ -1,10 +1,10 @@
-import { Typography, Dropdown, Menu, IconButton, MenuButton, MenuItem, Input } from '@mui/joy';
-import Box from '@mui/joy/Box';
-import { usePreferences } from '../contexts/PreferencesContext';
 import MoreVert from '@mui/icons-material/MoreVert';
-import { useState } from 'react';
+import { Dropdown, IconButton, Input, Menu, MenuButton, MenuItem, Typography } from '@mui/joy';
+import Box from '@mui/joy/Box';
 import axios from 'axios';
+import { useState } from 'react';
 import { useApi } from '../contexts/ApiContext';
+import { usePreferences } from '../contexts/PreferencesContext';
 
 function ShoppingListName() {
     const { api } = useApi();

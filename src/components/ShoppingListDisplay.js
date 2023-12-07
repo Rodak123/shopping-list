@@ -1,11 +1,11 @@
-import ShoppingListName from './ShoppingListName';
-import ItemAdd from './ItemAdd';
 import { Stack, Typography } from '@mui/joy';
-import ItemCard from './ItemCard';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { useApi } from '../contexts/ApiContext';
 import { usePreferences } from '../contexts/PreferencesContext';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import ItemAdd from './ItemAdd';
+import ItemCard from './ItemCard';
+import ShoppingListName from './ShoppingListName';
 
 function ShoppingListDisplay() {
     const { api } = useApi();

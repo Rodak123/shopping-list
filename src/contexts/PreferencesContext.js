@@ -1,6 +1,6 @@
+import axios from 'axios';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useApi } from './ApiContext';
-import axios from 'axios';
 
 const PreferencesContext = createContext();
 

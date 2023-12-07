@@ -1,10 +1,5 @@
+import { Box, Button, Modal, ModalDialog } from '@mui/joy';
 import * as React from 'react';
-import Box from '@mui/joy/Box';
-import Button from '@mui/joy/Button';
-import Modal from '@mui/joy/Modal';
-import ModalClose from '@mui/joy/ModalClose';
-import ItemPopup from './ItemPopup';
-import { ModalDialog } from '@mui/joy';
 import { useState } from 'react';
 import { usePreferences } from '../contexts/PreferencesContext';
 

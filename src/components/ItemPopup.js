@@ -1,25 +1,17 @@
 import * as React from 'react';
-import Card from '@mui/joy/Card';
-import CardActions from '@mui/joy/CardActions';
-import CardContent from '@mui/joy/CardContent';
-import Checkbox from '@mui/joy/Checkbox';
-import Divider from '@mui/joy/Divider';
-import FormControl from '@mui/joy/FormControl';
-import FormLabel from '@mui/joy/FormLabel';
-import Input from '@mui/joy/Input';
-import Typography from '@mui/joy/Typography';
-import Button from '@mui/joy/Button';
-import InfoOutlined from '@mui/icons-material/InfoOutlined';
-import CreditCardIcon from '@mui/icons-material/CreditCard';
 import {
-    Add,
-    HdrPlusOutlined,
-    PlusOneOutlined,
-    ShoppingBagOutlined,
-    ShoppingBasketOutlined,
-} from '@mui/icons-material';
-import Autocomplete from '@mui/joy/Autocomplete';
-import ModalClose from '@mui/joy/ModalClose';
+    Card,
+    CardActions,
+    CardContent,
+    Divider,
+    FormControl,
+    FormLabel,
+    Input,
+    Typography,
+    Button,
+    Autocomplete,
+    ModalClose,
+} from '@mui/joy';
 import { useApi } from '../contexts/ApiContext';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
