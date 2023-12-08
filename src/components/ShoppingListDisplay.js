@@ -1,4 +1,4 @@
-import { Stack, Typography } from '@mui/joy';
+import { Grid, Stack, Typography } from '@mui/joy';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useApi } from '../contexts/ApiContext';
@@ -36,7 +36,11 @@ function ShoppingListDisplay() {
     }
 
     const domItems = items.map((item, index) => {
-        return <ItemCard key={item.id ?? index} item={item}></ItemCard>;
+        return (
+            <Grid xs={12} md={6}>
+                <ItemCard key={item.id ?? index} item={item}></ItemCard>
+            </Grid>
+        );
     });
 
     let itemsDisplay = null;
@@ -45,22 +49,9 @@ function ShoppingListDisplay() {
             itemsDisplay = <Typography textAlign="center">Nejsou zde žádné položky</Typography>;
         } else {
             itemsDisplay = (
-                <Stack
-                    direction={'row'}
-                    alignItems={'start'}
-                    justifyContent={'center'}
-                    spacing={2}
-                    paddingX={2}
-                >
-                    {domItems.length > 1 && (
-                        <Stack flexGrow={1} direction={'column'} spacing={2}>
-                            {domItems.slice(0, domItems.length / 2)}
-                        </Stack>
-                    )}
-                    <Stack flexGrow={1} direction={'column'} spacing={2}>
-                        {domItems.slice(domItems.length / 2)}
-                    </Stack>
-                </Stack>
+                <Grid container spacing={2}>
+                    {domItems}
+                </Grid>
             );
         }
     }
