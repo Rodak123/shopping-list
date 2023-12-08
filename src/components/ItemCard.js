@@ -9,7 +9,7 @@ import axios from 'axios';
 import Loading from './Loading';
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
 import IconButton from '@mui/joy/IconButton';
-import Switch from '@mui/joy/Switch';
+import Stack from '@mui/material/Stack';
 
 function ItemCard({ item }) {
     const { api } = useApi();
@@ -38,11 +38,17 @@ function ItemCard({ item }) {
     return (
         <Card variant="outlined">
             <CardContent>
-                <Typography level="title-md">{itemType.name}</Typography>
-                <Typography level="body-sm">{item.note}</Typography>
-                <IconButton variant="solid">
-                    <FavoriteBorder />
-                </IconButton>
+                <Stack direction="row" justifyContent="space-between">
+                    <Stack direction="column" justifyContent="flex-start">
+                        <Typography level="title-md">{itemType.name}</Typography>
+                        <Typography level="body-sm">{item.note}</Typography>
+                    </Stack>
+                    <Stack direction="row" justifyContent="flex-end">
+                        <IconButton variant="solid">
+                            <FavoriteBorder />
+                        </IconButton>
+                    </Stack>
+                </Stack>
             </CardContent>
         </Card>
     );

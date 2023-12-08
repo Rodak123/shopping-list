@@ -38,14 +38,7 @@ function ItemPopup({ onClose }) {
         }
     }, [api]);
 
-    useEffect(() => {
-        if (itemNote === '') {
-            setNote('Bez popisu');
-        }
-    }, [itemNote]);
-
     const addItem = () => {
-        if (itemNote === '') setItemNote('Bez popisu');
         if (api !== null && selectedItem !== null) {
             axios
                 .put(
@@ -57,7 +50,7 @@ function ItemPopup({ onClose }) {
                         '/item/create',
                     {
                         type_id: selectedItem.id,
-                        note: note,
+                        note: itemNote === '' ? 'Bez popisu' : itemNote,
                         quantity: itemQuantity,
                     }
                 )
