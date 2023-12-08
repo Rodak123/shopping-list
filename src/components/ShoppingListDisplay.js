@@ -67,7 +67,13 @@ function ShoppingListDisplay() {
 
     return (
         <>
-            <Stack direction="row" spacing={2} alignContent={'center'} justifyContent={'center'}>
+            <Stack
+                direction="row"
+                spacing={2}
+                paddingX={2}
+                alignContent={'center'}
+                justifyContent={'center'}
+            >
                 <ShoppingListName />
                 <ItemAdd refreshItems={refreshItems} />
             </Stack>

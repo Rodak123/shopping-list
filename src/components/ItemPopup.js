@@ -25,6 +25,7 @@ function ItemPopup({ onClose }) {
     const [types, setTypes] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
     const [itemNote, setItemNote] = useState('');
+    const [note, setNote] = useState('');
     const [itemQuantity, setItemQuantity] = useState(1);
 
     useEffect(() => {
@@ -37,7 +38,14 @@ function ItemPopup({ onClose }) {
         }
     }, [api]);
 
+    useEffect(() => {
+        if (itemNote === '') {
+            setNote('Bez popisu');
+        }
+    }, [itemNote]);
+
     const addItem = () => {
+        if (itemNote === '') setItemNote('Bez popisu');
         if (api !== null && selectedItem !== null) {
             axios
                 .put(
@@ -49,19 +57,19 @@ function ItemPopup({ onClose }) {
                         '/item/create',
                     {
                         type_id: selectedItem.id,
-                        note: itemNote,
+                        note: note,
                         quantity: itemQuantity,
                     }
                 )
                 .then(function (res) {
                     if (res.data) {
                         console.log(res.data);
+                        console.log(itemNote);
                         onClose();
                     }
                 });
         }
     };
-
     const cardStyle = {
         variant: 'outlined',
         sx: {
@@ -92,6 +100,8 @@ function ItemPopup({ onClose }) {
     }
 
     selectTypes.sort((a, b) => (a.label > b.label ? 1 : -1));
+
+    console.log(itemNote);
 
     return (
         <Card {...cardStyle}>
