@@ -12,7 +12,6 @@ import {
     Typography,
 } from '@mui/joy';
 import { Stack } from '@mui/material';
-import axios from 'axios';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useApi } from '../contexts/ApiContext';
@@ -30,7 +29,8 @@ function ItemPopup({ onClose }) {
 
     useEffect(() => {
         if (api !== null) {
-            axios.get(api.url + '/item/type').then(function (res) {
+            const apiInstance = api.createApiInstance();
+            apiInstance.get('/item/type').then(function (res) {
                 if (res.data) {
                     setTypes(res.data);
                 }
@@ -40,14 +40,10 @@ function ItemPopup({ onClose }) {
 
     const addItem = () => {
         if (api !== null && selectedItem !== null) {
-            axios
+            const apiInstance = api.createApiInstance();
+            apiInstance
                 .put(
-                    api.url +
-                        '/user/' +
-                        api.id +
-                        '/list/' +
-                        shoppingListsPrefs.selectedId +
-                        '/item/create',
+                    '/user/' + api.id + '/list/' + shoppingListsPrefs.selectedId + '/item/create',
                     {
                         type_id: selectedItem.id,
                         note: itemNote === '' ? 'Bez popisu' : itemNote,

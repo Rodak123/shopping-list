@@ -1,5 +1,4 @@
 import { Grid, Stack, Typography } from '@mui/joy';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useApi } from '../contexts/ApiContext';
 import { usePreferences } from '../contexts/PreferencesContext';
@@ -15,8 +14,9 @@ function ShoppingListDisplay() {
 
     const refreshItems = () => {
         if (api === null || !isSelectedShoppingList) return;
-        axios
-            .get(api.url + '/user/' + api.id + '/list/' + shoppingListsPrefs.selectedId + '/item')
+        const apiInstance = api.createApiInstance();
+        apiInstance
+            .get('/user/' + api.id + '/list/' + shoppingListsPrefs.selectedId + '/item')
             .then(function (res) {
                 if (res.data) {
                     setItems(res.data);

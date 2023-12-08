@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useApi } from './ApiContext';
 
@@ -13,8 +12,9 @@ export const PreferencesProvider = ({ children }) => {
     const refreshSelected = () => {
         setSelectedShoppingList(null);
         if (api !== null && selectedShoppingListId !== -1) {
-            axios
-                .get(api.url + '/user/' + api.id + '/list/' + selectedShoppingListId)
+            const apiInstance = api.createApiInstance();
+            apiInstance
+                .get('/user/' + api.id + '/list/' + selectedShoppingListId)
                 .then(function (res) {
                     if (res.data) {
                         setSelectedShoppingListId(res.data.id);
