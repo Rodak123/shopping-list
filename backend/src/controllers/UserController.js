@@ -196,6 +196,8 @@ const createNewItemInList = async (req, res) => {
 
         await list.addItem(item);
 
+        await list.save();
+
         res.status(201).json(item);
     } catch (error) {
         res.status(500).json({ message: 'Error creating new item', error: error });
@@ -229,6 +231,49 @@ const getAllListItems = async (req, res) => {
     }
 };
 
+const updateItemInList = async (req, res) => {
+    const { id, list_id, item_id } = req.params;
+    const { quantity } = req.data;
+    if (quantity === undefined || quantity === null) {
+        res.status(400).json({ message: 'Quantity is required' });
+        return;
+    }
+    try {
+        const user = await User.findByPk(id, {
+            include: ShoppingList,
+        });
+
+        if (!user) {
+            res.status(404).json({ message: 'User not found' });
+            return;
+        }
+
+        const list = user.ShoppingLists.find((list) => list.id == list_id);
+
+        if (!list) {
+            res.status(404).json({ message: 'List not found' });
+            return;
+        }
+
+        const item = await list.Items.findOne({ where: { id: item_id } });
+
+        if (!item) {
+            res.status(404).json({ message: 'Item not found' });
+            return;
+        }
+
+        item.quantity = quantity;
+
+        await item.save();
+
+        await list.save();
+
+        res.status(201).json(item);
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating item', error: error });
+    }
+};
+
 module.exports = {
     getAllUsers: getAllUsers,
     getUserById: getUserById,
@@ -241,4 +286,5 @@ module.exports = {
 
     createNewItemInList: createNewItemInList,
     getAllListItems: getAllListItems,
+    updateItemInList: updateItemInList,
 };
