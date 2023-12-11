@@ -1,7 +1,16 @@
-import { Typography } from '@mui/joy';
+import { Button } from '@mui/joy';
+import { useApi } from '../../contexts/ApiContext';
 
 const Auth = () => {
-    return <Typography>Auth</Typography>;
+    // TODO: Login + Register
+    const { api } = useApi();
+
+    return (
+        <>
+            <Button onClick={api.loginUser}>Přihlaš se</Button>
+            {/* <Button onClick={api.registerUser}>Registruj se</Button> */}
+        </>
+    );
 };
 
 export default Auth;

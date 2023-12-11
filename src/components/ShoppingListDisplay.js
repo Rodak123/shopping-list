@@ -7,7 +7,7 @@ import ItemCard from './ItemCard';
 import ShoppingListName from './ShoppingListName';
 
 function ShoppingListDisplay() {
-    const { api } = useApi();
+    const { api, apiSession } = useApi();
     const { shoppingListsPrefs } = usePreferences();
     const isSelectedShoppingList = shoppingListsPrefs.selected !== null;
     const [items, setItems] = useState(null);

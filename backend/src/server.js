@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 const Sequelize = require('sequelize');
 const sequelize = require('./connection');
@@ -82,19 +84,36 @@ const loadProductTaxonomy = require('../loadProductTaxonomy');
 
         console.log('Taxonomy loaded!');
 
-        await User.create({
-            user_name: 'JohnDoe',
-        });
-        console.log('Added John!');
+        // await User.create({
+        //     user_name: 'JohnDoe',
+        // });
+        // console.log('Added John!');
+
+        console.log('No John Added!');
     }
 })();
 
 const authorization = async (req, res, next) => {
     const authheader = req.headers.authorization;
-    console.log(authheader);
 
+    console.log('Authorization:');
+    console.log(authheader);
     if (!authheader) {
-        return res.status(401).json({ error: 'No authorization header' });
+        return res.status(401).json({ message: 'No authorization header' });
+    }
+
+    try {
+        const session = await AuthSession.findOne({ where: { token: authheader } });
+        console.log('Session:');
+        console.log(session);
+        if (!session) {
+            return res.status(401).json({ message: 'Invalid token' });
+        }
+        req.session = session;
+        console.log(session);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: 'Error validating token', error: error });
     }
 
     next();
@@ -118,7 +137,93 @@ app.use((req, res, next) => {
     next();
 });
 
+app.post('/register', async (req, res) => {
+    const { user_name, password, password_confirm } = req.body;
+
+    if (!user_name || !password || !password_confirm) {
+        return res
+            .status(400)
+            .json({ message: 'No user name or password or password confirm provided' });
+    }
+
+    try {
+        const existingUser = await User.findOne({ where: { user_name: user_name } });
+
+        if (existingUser) {
+            return res.status(400).json({ message: 'User name already exists' });
+        }
+
+        if (password !== password_confirm) {
+            return res.status(400).json({ message: 'Passwords do not match' });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        const user = await User.create({
+            user_name: user_name,
+            password: hashedPassword,
+        });
+
+        res.status(201).json(user);
+    } catch (error) {
+        res.status(500).json({ message: 'Error registering user' });
+    }
+});
+
+app.post('/login', async (req, res) => {
+    const { user_name, password } = req.body;
+
+    if (!user_name || !password) {
+        return res.status(400).json({ message: 'No user name or password provided' });
+    }
+
+    try {
+        const user = await User.findOne({
+            where: {
+                user_name: user_name,
+            },
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User name or password is wrong' });
+        }
+
+        const passwordsMatch = await bcrypt.compare(password, user.password);
+
+        if (!passwordsMatch) {
+            return res.status(401).json({ message: 'User name or password is wrong' });
+        }
+
+        await AuthSession.destroy({ where: { user_id: user.id } });
+
+        const date_expires = new Date(Date.now() + 1000 * 60 * 60 * 24 * 3); // +3 days
+
+        const generatedToken = bcrypt.hashSync(user.id + date_expires, saltRounds);
+
+        const session = await AuthSession.create({
+            user_id: user.id,
+            token: generatedToken,
+            date_expires: date_expires,
+        });
+
+        res.status(200).json(session);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error logging in' });
+    }
+});
+
 app.use(authorization);
+
+app.get('/logout', async (req, res) => {
+    const session = req.session;
+    try {
+        await session.destroy();
+        res.status(200).json({ message: 'Logged out' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error logging out', error: error });
+    }
+});
 
 const userRoutes = require('./routes/UserRoutes');
 const shoppingListRoutes = require('./routes/ShoppingListRoutes');

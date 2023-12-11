@@ -17,7 +17,7 @@ import DateFormatter from '../DateFormatter';
 import Loading from '../Loading';
 
 function SidebarContent({ setOpen }) {
-    const { api } = useApi();
+    const { api, apiSession } = useApi();
     const { shoppingListsPrefs } = usePreferences();
     const [user, setUser] = useState(null);
     const [shoppingLists, setShoppingLists] = useState([]);
@@ -38,7 +38,7 @@ function SidebarContent({ setOpen }) {
                 }
             });
         }
-    }, [api, shoppingListsPrefs.selected]);
+    }, [api, shoppingListsPrefs.selected, apiSession]);
 
     if (user === null) {
         return (
@@ -84,7 +84,7 @@ function SidebarContent({ setOpen }) {
         return (
             <ListItemButton
                 key={shoppingList.id}
-                sx={{ fontWeight: shoppingList.id == selectedList ? 'bold' : 'normal' }}
+                sx={{ fontWeight: shoppingList.id === selectedList ? 'bold' : 'normal' }}
                 onClick={() => selectShoppingList(shoppingList.id)}
             >
                 {shoppingList.name}

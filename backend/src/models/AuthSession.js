@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../connection');
 
 const AuthSession = sequelize.define('AuthSession', {
-    key: {
+    token: {
         type: DataTypes.STRING,
         allowNull: false,
         min: 0,

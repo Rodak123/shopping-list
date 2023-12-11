@@ -1,21 +1,23 @@
 import axios from 'axios';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 const ApiContext = createContext();
 
 export const ApiProvider = ({ children }) => {
     const [api, setApi] = useState(null);
     const [apiLoaded, setApiLoaded] = useState(false);
-    //const [loggedUser, setLoggedUser] = useState(null);
 
-    const createApiInstance = () => {
+    const [apiSession, setApiSession] = useState(null);
+    const [apiSessionLoaded, setApiSessionLoaded] = useState(false);
+
+    const createApiInstance = useCallback(() => {
         return axios.create({
             baseURL: 'http://localhost:3100',
-            headers: { Authorization: 'foobar' },
+            headers: { Authorization: apiSession ? apiSession.token : 'bar' },
         });
-    };
+    }, [apiSession]);
 
-    const loadApi = () => {
+    const loadApi = useCallback(() => {
         if (api === null) return;
         const apiInstance = api.createApiInstance();
         apiInstance
@@ -24,33 +26,92 @@ export const ApiProvider = ({ children }) => {
                 if (res.data) {
                     setApiLoaded(true);
                     api.id = res.data.id;
-                    //setLoggedUser(res.data);
                 }
             })
             .catch(function (error) {
-                setApiLoaded(false);
-                setTimeout(loadApi, 5000);
+                if (error.code === 'ERR_NETWORK') {
+                    setApiLoaded(false);
+                    setTimeout(loadApi, 5000);
+                } else if (error.response.status === 401) {
+                    console.log('Unauthorized');
+                    setApiLoaded(true);
+                }
             });
-    };
+    }, [api]);
 
     useEffect(() => {
         if (api === null) {
-            const id = 1;
             const api = {
                 createApiInstance: createApiInstance,
-                id: id,
+                id: 1,
             };
+            const registerUser = () => {
+                if (api === null) return;
+                const apiInstance = api.createApiInstance();
+                console.log('register');
+                apiInstance
+                    .post('/register', {
+                        user_name: 'user',
+                        password: 'password',
+                        password_confirm: 'password',
+                    })
+                    .then(function (res) {
+                        if (res.status === 201) {
+                            //console.log('Registered as ' + res.data.user_name);
+                            loginUser();
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            };
+
+            const loginUser = () => {
+                if (api === null) return;
+                const apiInstance = api.createApiInstance();
+                console.log('login');
+                apiInstance
+                    .post('/login', {
+                        user_name: 'user',
+                        password: 'password',
+                    })
+                    .then(function (res) {
+                        setApiSession(res.data);
+                        console.log("Logged in as 'user'");
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        if (error.response.status === 404) {
+                            registerUser();
+                            //console.log('User not found');
+                        }
+                    });
+            };
+
+            api.loginUser = loginUser;
+            api.registerUser = registerUser;
             setApi(api);
         }
-    }, [api]);
+    }, [api, createApiInstance]);
 
     useEffect(() => {
         if (apiLoaded === false) {
             loadApi();
         }
-    }, [apiLoaded, api, loadApi]);
+    }, [apiLoaded, api, loadApi, apiSession]);
 
-    return <ApiContext.Provider value={{ api, apiLoaded }}>{children}</ApiContext.Provider>;
+    useEffect(() => {
+        console.log('Api session changed', apiSession === null);
+        setApiSessionLoaded(apiSession !== null);
+    }, [apiSession]);
+
+    return (
+        <ApiContext.Provider
+            value={{ api, apiLoaded, apiSession, setApiSession, apiSessionLoaded }}
+        >
+            {children}
+        </ApiContext.Provider>
+    );
 };
 
 export const useApi = () => {

@@ -1,13 +1,14 @@
 import { Stack, Typography } from '@mui/joy';
 import './App.css';
+import Auth from './components/Auth/Auth';
 import Header from './components/Header';
 import Loading from './components/Loading';
 import ShoppingListDisplay from './components/ShoppingListDisplay';
-import { ApiProvider, useApi } from './contexts/ApiContext';
+import { useApi } from './contexts/ApiContext';
 import { PreferencesProvider } from './contexts/PreferencesContext';
 
 function App() {
-    const { apiLoaded, api } = useApi();
+    const { apiLoaded, apiSessionLoaded } = useApi();
 
     if (apiLoaded === false) {
         return (
@@ -27,18 +28,21 @@ function App() {
         );
     }
 
+    if (apiSessionLoaded === false) {
+        console.log("No session, auth'ing");
+        return <Auth />;
+    }
+
     return (
         <>
-            <ApiProvider>
-                <PreferencesProvider>
-                    <div className="App">
-                        <Stack direction="column" spacing={2}>
-                            <Header />
-                            <ShoppingListDisplay />
-                        </Stack>
-                    </div>
-                </PreferencesProvider>
-            </ApiProvider>
+            <PreferencesProvider>
+                <div className="App">
+                    <Stack direction="column" spacing={2}>
+                        <Header />
+                        <ShoppingListDisplay />
+                    </Stack>
+                </div>
+            </PreferencesProvider>
         </>
     );
 }
