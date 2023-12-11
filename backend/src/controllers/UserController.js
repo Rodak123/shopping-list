@@ -26,10 +26,13 @@ const getUserById = async (req, res) => {
 
 const createNewList = async (req, res) => {
     const { id } = req.params;
-    const listData = req.body;
-    if (!listData.name) {
-        return res.status(400).json({ message: 'Name is required', error: error });
+    const { name } = req.body;
+
+    if (!name) {
+        name = 'Nákupní list';
+        // return res.status(400).json({ message: 'Name is required', error: error });
     }
+
     try {
         const user = await User.findByPk(id);
 
@@ -38,7 +41,7 @@ const createNewList = async (req, res) => {
         }
 
         const shoppingList = await ShoppingList.create({
-            name: listData.name,
+            name: name,
         });
 
         await user.addShoppingList(shoppingList);

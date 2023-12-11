@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import { useApi } from '../../contexts/ApiContext';
 import { usePreferences } from '../../contexts/PreferencesContext';
 import DateFormatter from '../DateFormatter';
+import Loading from '../Loading';
 
 function SidebarContent({ setOpen }) {
     const { api } = useApi();
@@ -40,7 +41,18 @@ function SidebarContent({ setOpen }) {
     }, [api, shoppingListsPrefs.selected]);
 
     if (user === null) {
-        return <Typography>Načítání...</Typography>;
+        return (
+            <Stack
+                sx={{ minHeight: '100%', minWidth: '100%' }}
+                direction="column"
+                justifyContent="center"
+                alignItems="center"
+                spacing={2}
+            >
+                <Loading />
+                <Typography textAlign="center">Načítání...</Typography>
+            </Stack>
+        );
     }
 
     const addNewList = () => {
