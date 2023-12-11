@@ -10,10 +10,14 @@ import Loading from './Loading';
 import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
 import IconButton from '@mui/joy/IconButton';
 import Stack from '@mui/material/Stack';
+import Add from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import { usePreferences } from '../contexts/PreferencesContext';
 
 function ItemCard({ item }) {
     const { api } = useApi();
     const [itemType, setItemType] = useState(null);
+    const { shoppingListsPrefs } = usePreferences();
 
     useEffect(() => {
         if (api !== null && item !== null) {
@@ -24,6 +28,31 @@ function ItemCard({ item }) {
             });
         }
     }, [api]);
+
+    const updateItem = () => {
+        console.log(item);
+        if (api !== null) {
+            axios
+                .put(
+                    api.url +
+                        '/user/' +
+                        api.id +
+                        '/list/' +
+                        shoppingListsPrefs.selectedId +
+                        '/item/' +
+                        item.id +
+                        '/update',
+                    {
+                        quantity: item.quantity - 1,
+                    }
+                )
+                .then(function (res) {
+                    if (res.data) {
+                        console.log(res.data);
+                    }
+                });
+        }
+    };
 
     if (itemType === null) {
         return (
@@ -43,11 +72,17 @@ function ItemCard({ item }) {
                         <Typography level="title-md">{itemType.name}</Typography>
                         <Typography level="body-sm">{item.note}</Typography>
                     </Stack>
-                    <Stack direction="row" justifyContent="flex-end">
-                        <IconButton variant="solid">
-                            <FavoriteBorder />
-                        </IconButton>
-                    </Stack>
+                    <Box sx={{ display: 'flex', gap: 2 }}>
+                        <Button size="sm" variant="soft" onClick={updateItem}>
+                            <RemoveIcon />
+                        </Button>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Typography level="h5">{item.quantity}</Typography>
+                        </Box>
+                        <Button size="sm" variant="soft">
+                            <Add />
+                        </Button>
+                    </Box>
                 </Stack>
             </CardContent>
         </Card>

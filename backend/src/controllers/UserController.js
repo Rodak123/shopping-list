@@ -233,7 +233,7 @@ const getAllListItems = async (req, res) => {
 
 const updateItemInList = async (req, res) => {
     const { id, list_id, item_id } = req.params;
-    const { quantity } = req.data;
+    const { quantity } = req.body;
     if (quantity === undefined || quantity === null) {
         res.status(400).json({ message: 'Quantity is required' });
         return;
