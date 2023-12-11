@@ -9,10 +9,14 @@ const ShoppingList = require('./models/ShoppingList');
 const Item = require('./models/Item');
 const ItemType = require('./models/ItemType');
 const ItemCategory = require('./models/ItemCategory');
+const AuthSession = require('./models/AuthSession');
 
 const loadProductTaxonomy = require('../loadProductTaxonomy');
 
 (async () => {
+    User.hasOne(AuthSession, { foreignKey: 'user_id', allowNull: true });
+    AuthSession.belongsTo(User, { foreignKey: 'user_id', allowNull: false });
+
     User.belongsToMany(ShoppingList, { through: 'UserShoppingList' });
     ShoppingList.belongsToMany(User, { through: 'UserShoppingList' });
 
@@ -85,6 +89,17 @@ const loadProductTaxonomy = require('../loadProductTaxonomy');
     }
 })();
 
+const authorization = async (req, res, next) => {
+    const authheader = req.headers.authorization;
+    console.log(authheader);
+
+    if (!authheader) {
+        return res.status(401).json({ error: 'No authorization header' });
+    }
+
+    next();
+};
+
 const app = express();
 const PORT = process.env.PORT || 3100;
 
@@ -102,6 +117,8 @@ app.use((req, res, next) => {
     res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
     next();
 });
+
+app.use(authorization);
 
 const userRoutes = require('./routes/UserRoutes');
 const shoppingListRoutes = require('./routes/ShoppingListRoutes');

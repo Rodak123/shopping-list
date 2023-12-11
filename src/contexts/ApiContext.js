@@ -11,7 +11,7 @@ export const ApiProvider = ({ children }) => {
     const createApiInstance = () => {
         return axios.create({
             baseURL: 'http://localhost:3100',
-            //headers: { 'X-Custom-Header': 'foobar' },
+            headers: { Authorization: 'foobar' },
         });
     };
 
@@ -24,7 +24,7 @@ export const ApiProvider = ({ children }) => {
                 if (res.data) {
                     setApiLoaded(true);
                     api.id = res.data.id;
-                    setLoggedUser(res.data);
+                    //setLoggedUser(res.data);
                 }
             })
             .catch(function (error) {
