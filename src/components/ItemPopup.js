@@ -19,7 +19,7 @@ import { usePreferences } from '../contexts/PreferencesContext';
 import Loading from './Loading';
 
 function ItemPopup({ onClose }) {
-    const { api } = useApi();
+    const { api, apiSession } = useApi();
     const { shoppingListsPrefs } = usePreferences();
     const [types, setTypes] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
@@ -29,7 +29,7 @@ function ItemPopup({ onClose }) {
 
     useEffect(() => {
         if (api !== null) {
-            const apiInstance = api.createApiInstance();
+            const apiInstance = api.createApiInstance(apiSession);
             apiInstance.get('/item/type').then(function (res) {
                 if (res.data) {
                     setTypes(res.data);
@@ -40,7 +40,7 @@ function ItemPopup({ onClose }) {
 
     const addItem = () => {
         if (api !== null && selectedItem !== null) {
-            const apiInstance = api.createApiInstance();
+            const apiInstance = api.createApiInstance(apiSession);
             apiInstance
                 .put(
                     '/user/' + api.id + '/list/' + shoppingListsPrefs.selectedId + '/item/create',

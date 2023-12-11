@@ -14,7 +14,7 @@ function ShoppingListDisplay() {
 
     const refreshItems = () => {
         if (api === null || !isSelectedShoppingList) return;
-        const apiInstance = api.createApiInstance();
+        const apiInstance = api.createApiInstance(apiSession);
         apiInstance
             .get('/user/' + api.id + '/list/' + shoppingListsPrefs.selectedId + '/item')
             .then(function (res) {

@@ -24,14 +24,14 @@ function SidebarContent({ setOpen }) {
 
     useEffect(() => {
         if (api !== null) {
-            let apiInstance = api.createApiInstance();
+            let apiInstance = api.createApiInstance(apiSession);
             apiInstance.get('/user/' + api.id).then(function (res) {
                 if (res.data) {
                     setUser(res.data);
                 }
             });
 
-            apiInstance = api.createApiInstance();
+            apiInstance = api.createApiInstance(apiSession);
             apiInstance.get('/user/' + api.id + '/list').then(function (res) {
                 if (res.data) {
                     setShoppingLists(res.data);
@@ -57,7 +57,7 @@ function SidebarContent({ setOpen }) {
 
     const addNewList = () => {
         if (api !== null) {
-            const apiInstance = api.createApiInstance();
+            const apiInstance = api.createApiInstance(apiSession);
             apiInstance
                 .put('/user/' + api.id + '/list/create', {
                     name: 'Nový List ' + (shoppingLists.length + 1),

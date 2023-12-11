@@ -6,7 +6,7 @@ import { useApi } from '../contexts/ApiContext';
 import { usePreferences } from '../contexts/PreferencesContext';
 
 function ShoppingListName() {
-    const { api } = useApi();
+    const { api, apiSession } = useApi();
     const { shoppingListsPrefs } = usePreferences();
 
     const [renamingShoppingList, setRenamingShoppingList] = useState(false);
@@ -16,7 +16,7 @@ function ShoppingListName() {
 
     const deleteList = () => {
         if (!isSelectedShoppingList) return;
-        const apiInstance = api.createApiInstance();
+        const apiInstance = api.createApiInstance(apiSession);
         apiInstance
             .delete('/user/' + api.id + '/list/' + shoppingListsPrefs.selectedId + '/delete')
             .then(function (res) {
@@ -26,7 +26,7 @@ function ShoppingListName() {
 
     const renameList = () => {
         if (!isSelectedShoppingList) return;
-        const apiInstance = api.createApiInstance();
+        const apiInstance = api.createApiInstance(apiSession);
         apiInstance
             .put('/user/' + api.id + '/list/' + shoppingListsPrefs.selectedId + '/rename', {
                 name: newShoppingListName,

@@ -4,7 +4,7 @@ import { useApi } from './ApiContext';
 const PreferencesContext = createContext();
 
 export const PreferencesProvider = ({ children }) => {
-    const { api } = useApi();
+    const { api, apiSession } = useApi();
 
     const [selectedShoppingListId, setSelectedShoppingListId] = useState(-1);
     const [selectedShoppingList, setSelectedShoppingList] = useState(null);
@@ -12,7 +12,7 @@ export const PreferencesProvider = ({ children }) => {
     const refreshSelected = () => {
         setSelectedShoppingList(null);
         if (api !== null && selectedShoppingListId !== -1) {
-            const apiInstance = api.createApiInstance();
+            const apiInstance = api.createApiInstance(apiSession);
             apiInstance
                 .get('/user/' + api.id + '/list/' + selectedShoppingListId)
                 .then(function (res) {

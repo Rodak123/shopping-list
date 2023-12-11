@@ -3,6 +3,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import Button from '@mui/joy/Button';
 import Card from '@mui/joy/Card';
 import CardContent from '@mui/joy/CardContent';
+import Link from '@mui/joy/Link';
 import Typography from '@mui/joy/Typography';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/system/Box';
@@ -10,16 +11,15 @@ import { useEffect, useState } from 'react';
 import { useApi } from '../contexts/ApiContext';
 import { usePreferences } from '../contexts/PreferencesContext';
 import Loading from './Loading';
-import Link from '@mui/joy/Link';
 
 function ItemCard({ item, refreshItems }) {
-    const { api } = useApi();
+    const { api, apiSession } = useApi();
     const [itemType, setItemType] = useState(null);
     const { shoppingListsPrefs } = usePreferences();
 
     useEffect(() => {
         if (api !== null && item !== null) {
-            const apiInstance = api.createApiInstance();
+            const apiInstance = api.createApiInstance(apiSession);
             apiInstance.get('/item/type/' + item.item_type_id).then(function (res) {
                 if (res.data) {
                     setItemType(res.data);
@@ -30,7 +30,7 @@ function ItemCard({ item, refreshItems }) {
 
     const updateItemSubtract = () => {
         if (api !== null) {
-            const apiInstance = api.createApiInstance();
+            const apiInstance = api.createApiInstance(apiSession);
             apiInstance
                 .put(
                     '/user/' +
@@ -55,7 +55,7 @@ function ItemCard({ item, refreshItems }) {
 
     const updateItemAdd = () => {
         if (api !== null) {
-            const apiInstance = api.createApiInstance();
+            const apiInstance = api.createApiInstance(apiSession);
             apiInstance
                 .put(
                     '/user/' +

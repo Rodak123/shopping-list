@@ -10,16 +10,16 @@ export const ApiProvider = ({ children }) => {
     const [apiSession, setApiSession] = useState(null);
     const [apiSessionLoaded, setApiSessionLoaded] = useState(false);
 
-    const createApiInstance = useCallback(() => {
+    const createApiInstance = (apiSession) => {
         return axios.create({
             baseURL: 'http://localhost:3100',
             headers: { Authorization: apiSession ? apiSession.token : 'bar' },
         });
-    }, [apiSession]);
+    };
 
     const loadApi = useCallback(() => {
         if (api === null) return;
-        const apiInstance = api.createApiInstance();
+        const apiInstance = api.createApiInstance(apiSession);
         apiInstance
             .get('/user/' + api.id)
             .then(function (res) {
