@@ -17,7 +17,7 @@ import DateFormatter from '../DateFormatter';
 import Loading from '../Loading';
 
 function SidebarContent({ setOpen }) {
-    const { api, apiSession } = useApi();
+    const { api, apiSession, logout } = useApi();
     const { shoppingListsPrefs } = usePreferences();
     const [user, setUser] = useState(null);
     const [shoppingLists, setShoppingLists] = useState([]);
@@ -148,7 +148,9 @@ function SidebarContent({ setOpen }) {
                             od <DateFormatter date={dateJoined} />
                         </Typography>
                     </div>
-                    <Button variant="outlined">Odhlasit se </Button>
+                    <Button variant="outlined" onClick={logout}>
+                        Odhlasit se{' '}
+                    </Button>
                 </Stack>
             </Box>
         </>

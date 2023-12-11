@@ -39,6 +39,18 @@ export const ApiProvider = ({ children }) => {
             });
     }, [api]);
 
+    const logout = () => {
+        if (api !== null) {
+            const apiInstance = api.createApiInstance(apiSession);
+            apiInstance.get('/logout').then(function (res) {
+                if (res.status === 200) {
+                    setApiSession(null);
+                    window.location.reload();
+                }
+            });
+        }
+    };
+
     useEffect(() => {
         if (api === null) {
             const api = {
@@ -107,7 +119,7 @@ export const ApiProvider = ({ children }) => {
 
     return (
         <ApiContext.Provider
-            value={{ api, apiLoaded, apiSession, setApiSession, apiSessionLoaded }}
+            value={{ api, apiLoaded, apiSession, setApiSession, apiSessionLoaded, logout }}
         >
             {children}
         </ApiContext.Provider>
