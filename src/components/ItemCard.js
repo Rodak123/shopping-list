@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import { useApi } from '../contexts/ApiContext';
 import { usePreferences } from '../contexts/PreferencesContext';
 import Loading from './Loading';
+import Link from '@mui/joy/Link';
 
 function ItemCard({ item, refreshItems }) {
     const { api } = useApi();
@@ -92,7 +93,18 @@ function ItemCard({ item, refreshItems }) {
             <CardContent>
                 <Stack direction="row" justifyContent="space-between">
                     <Stack direction="column" justifyContent="flex-start">
-                        <Typography level="title-md">{itemType.name}</Typography>
+                        <Typography level="title-md">
+                            {itemType.name}{' '}
+                            <Link
+                                overlay
+                                underline="none"
+                                href={
+                                    'https://www.google.com/search?q=' +
+                                    itemType.name +
+                                    '&tbm=shop&hl=cs'
+                                }
+                            ></Link>
+                        </Typography>
                         <Typography level="body-sm">{item.note}</Typography>
                     </Stack>
                     <Box sx={{ display: 'flex', gap: 2 }}>
