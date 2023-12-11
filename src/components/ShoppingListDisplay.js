@@ -38,7 +38,7 @@ function ShoppingListDisplay() {
     const domItems = items.map((item, index) => {
         return (
             <Grid key={item.id ?? index} xs={12} md={6}>
-                <ItemCard item={item}></ItemCard>
+                <ItemCard refreshItems={refreshItems} item={item}></ItemCard>
             </Grid>
         );
     });

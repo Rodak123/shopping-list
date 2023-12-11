@@ -3,7 +3,7 @@ import Sidebar from './Sidebar/Sidebar';
 
 function Header() {
     return (
-        <Box borderBottom={'1px solid'} display={'flex'} padding={'6px'}>
+        <Box borderBottom={'1px solid gainsboro'} display={'flex'} padding={'6px'}>
             <Sidebar />
         </Box>
     );

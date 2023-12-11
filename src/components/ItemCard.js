@@ -11,7 +11,7 @@ import { useApi } from '../contexts/ApiContext';
 import { usePreferences } from '../contexts/PreferencesContext';
 import Loading from './Loading';
 
-function ItemCard({ item }) {
+function ItemCard({ item, refreshItems }) {
     const { api } = useApi();
     const [itemType, setItemType] = useState(null);
     const { shoppingListsPrefs } = usePreferences();
@@ -27,8 +27,7 @@ function ItemCard({ item }) {
         }
     }, [api]);
 
-    const updateItem = () => {
-        console.log(item);
+    const updateItemSubtract = () => {
         if (api !== null) {
             const apiInstance = api.createApiInstance();
             apiInstance
@@ -46,6 +45,32 @@ function ItemCard({ item }) {
                 )
                 .then(function (res) {
                     if (res.data) {
+                        refreshItems();
+                        console.log(res.data);
+                    }
+                });
+        }
+    };
+
+    const updateItemAdd = () => {
+        if (api !== null) {
+            const apiInstance = api.createApiInstance();
+            apiInstance
+                .put(
+                    '/user/' +
+                        api.id +
+                        '/list/' +
+                        shoppingListsPrefs.selectedId +
+                        '/item/' +
+                        item.id +
+                        '/update',
+                    {
+                        delta_quantity: +1,
+                    }
+                )
+                .then(function (res) {
+                    if (res.data) {
+                        refreshItems();
                         console.log(res.data);
                     }
                 });
@@ -71,13 +96,13 @@ function ItemCard({ item }) {
                         <Typography level="body-sm">{item.note}</Typography>
                     </Stack>
                     <Box sx={{ display: 'flex', gap: 2 }}>
-                        <Button size="sm" variant="soft" onClick={updateItem}>
+                        <Button size="sm" variant="soft" onClick={updateItemSubtract}>
                             <RemoveIcon />
                         </Button>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             <Typography level="h5">{item.quantity}</Typography>
                         </Box>
-                        <Button size="sm" variant="soft">
+                        <Button size="sm" variant="soft" onClick={updateItemAdd}>
                             <Add />
                         </Button>
                     </Box>
