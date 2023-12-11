@@ -1,7 +1,6 @@
 import MoreVert from '@mui/icons-material/MoreVert';
 import { Dropdown, IconButton, Input, Menu, MenuButton, MenuItem, Typography } from '@mui/joy';
 import Box from '@mui/joy/Box';
-import axios from 'axios';
 import { useState } from 'react';
 import { useApi } from '../contexts/ApiContext';
 import { usePreferences } from '../contexts/PreferencesContext';
@@ -17,10 +16,9 @@ function ShoppingListName() {
 
     const deleteList = () => {
         if (!isSelectedShoppingList) return;
-        axios
-            .delete(
-                api.url + '/user/' + api.id + '/list/' + shoppingListsPrefs.selectedId + '/delete'
-            )
+        const apiInstance = api.createApiInstance();
+        apiInstance
+            .delete('/user/' + api.id + '/list/' + shoppingListsPrefs.selectedId + '/delete')
             .then(function (res) {
                 if (res.status === 200) shoppingListsPrefs.setSelectedId(-1);
             });
@@ -28,13 +26,11 @@ function ShoppingListName() {
 
     const renameList = () => {
         if (!isSelectedShoppingList) return;
-        axios
-            .put(
-                api.url + '/user/' + api.id + '/list/' + shoppingListsPrefs.selectedId + '/rename',
-                {
-                    name: newShoppingListName,
-                }
-            )
+        const apiInstance = api.createApiInstance();
+        apiInstance
+            .put('/user/' + api.id + '/list/' + shoppingListsPrefs.selectedId + '/rename', {
+                name: newShoppingListName,
+            })
             .then(function (res) {
                 if (res.status === 200) {
                     shoppingListsPrefs.refreshSelected();

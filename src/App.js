@@ -1,13 +1,12 @@
 import { Stack, Typography } from '@mui/joy';
 import './App.css';
 import Header from './components/Header';
-import { ApiProvider } from './contexts/ApiContext';
-import { PreferencesProvider } from './contexts/PreferencesContext';
-import { useApi } from './contexts/ApiContext';
 import ShoppingListDisplay from './components/ShoppingListDisplay';
+import { ApiProvider, useApi } from './contexts/ApiContext';
+import { PreferencesProvider } from './contexts/PreferencesContext';
 
 function App() {
-    const { apiLoaded } = useApi();
+    const { apiLoaded, api } = useApi();
 
     if (apiLoaded === false) {
         return <Typography>Načítání API...</Typography>;
