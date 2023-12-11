@@ -233,14 +233,18 @@ const getAllListItems = async (req, res) => {
 
 const updateItemInList = async (req, res) => {
     const { id, list_id, item_id } = req.params;
-    const { quantity } = req.body;
-    if (quantity === undefined || quantity === null) {
-        res.status(400).json({ message: 'Quantity is required' });
-        return;
+    const { delta_quantity } = req.body;
+
+    if (delta_quantity === undefined || delta_quantity === null) {
+        delta_quantity = 0;
     }
+
     try {
         const user = await User.findByPk(id, {
-            include: ShoppingList,
+            include: {
+                model: ShoppingList,
+                include: Item,
+            },
         });
 
         if (!user) {
@@ -255,18 +259,16 @@ const updateItemInList = async (req, res) => {
             return;
         }
 
-        const item = await list.Items.findOne({ where: { id: item_id } });
+        const item = list.Items.find((item) => item.id == item_id);
 
         if (!item) {
             res.status(404).json({ message: 'Item not found' });
             return;
         }
 
-        item.quantity = quantity;
+        item.quantity = item.quantity + delta_quantity;
 
         await item.save();
-
-        await list.save();
 
         res.status(201).json(item);
     } catch (error) {

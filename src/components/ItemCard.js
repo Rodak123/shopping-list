@@ -1,14 +1,14 @@
-import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
-import Card from '@mui/joy/Card';
-import CardContent from '@mui/joy/CardContent';
-import IconButton from '@mui/joy/IconButton';
-import Typography from '@mui/joy/Typography';
-import Stack from '@mui/material/Stack';
 import Add from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import { usePreferences } from '../contexts/PreferencesContext';
+import Button from '@mui/joy/Button';
+import Card from '@mui/joy/Card';
+import CardContent from '@mui/joy/CardContent';
+import Typography from '@mui/joy/Typography';
+import Stack from '@mui/material/Stack';
+import Box from '@mui/system/Box';
 import { useEffect, useState } from 'react';
 import { useApi } from '../contexts/ApiContext';
+import { usePreferences } from '../contexts/PreferencesContext';
 import Loading from './Loading';
 
 function ItemCard({ item }) {
@@ -30,10 +30,10 @@ function ItemCard({ item }) {
     const updateItem = () => {
         console.log(item);
         if (api !== null) {
-            axios
+            const apiInstance = api.createApiInstance();
+            apiInstance
                 .put(
-                    api.url +
-                        '/user/' +
+                    '/user/' +
                         api.id +
                         '/list/' +
                         shoppingListsPrefs.selectedId +
@@ -41,7 +41,7 @@ function ItemCard({ item }) {
                         item.id +
                         '/update',
                     {
-                        quantity: item.quantity - 1,
+                        delta_quantity: -1,
                     }
                 )
                 .then(function (res) {
