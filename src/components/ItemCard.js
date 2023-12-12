@@ -11,11 +11,20 @@ import { useEffect, useState } from 'react';
 import { useApi } from '../contexts/ApiContext';
 import { usePreferences } from '../contexts/PreferencesContext';
 import Loading from './Loading';
+import Divider from '@mui/joy/Divider';
+import DialogTitle from '@mui/joy/DialogTitle';
+import DialogContent from '@mui/joy/DialogContent';
+import DialogActions from '@mui/joy/DialogActions';
+import Modal from '@mui/joy/Modal';
+import ModalDialog from '@mui/joy/ModalDialog';
+import DeleteForever from '@mui/icons-material/DeleteForever';
+import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
 
 function ItemCard({ item, refreshItems }) {
     const { api, apiSession } = useApi();
     const [itemType, setItemType] = useState(null);
     const { shoppingListsPrefs } = usePreferences();
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         if (api !== null && item !== null) {
@@ -78,6 +87,18 @@ function ItemCard({ item, refreshItems }) {
         }
     };
 
+    const openWebsite = () => {
+        setOpen(false);
+        window.open(
+            'https://www.google.com/search?q=' +
+                itemType.name +
+                ' ' +
+                item.note +
+                '&tbm=shop&hl=cs',
+            '_blank'
+        );
+    };
+
     if (itemType === null) {
         return (
             <Card variant="outlined">
@@ -89,38 +110,54 @@ function ItemCard({ item, refreshItems }) {
     }
 
     return (
-        <Card variant="outlined">
-            <CardContent>
-                <Stack direction="row" justifyContent="space-between">
-                    <Stack direction="column" justifyContent="flex-start">
-                        <Typography level="title-md">
-                            {itemType.name}{' '}
-                            <Link
-                                overlay
-                                underline="none"
-                                href={
-                                    'https://www.google.com/search?q=' +
-                                    itemType.name +
-                                    '&tbm=shop&hl=cs'
-                                }
-                            ></Link>
-                        </Typography>
-                        <Typography level="body-sm">{item.note}</Typography>
-                    </Stack>
-                    <Box sx={{ display: 'flex', gap: 2 }}>
-                        <Button size="sm" variant="soft" onClick={updateItemSubtract}>
-                            <RemoveIcon />
-                        </Button>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Typography level="h5">{item.quantity}</Typography>
+        <>
+            <Card variant="outlined">
+                <CardContent>
+                    <Stack direction="row" justifyContent="space-between">
+                        <Stack direction="column" justifyContent="flex-start">
+                            <Typography level="title-md">
+                                <Link overlay></Link>
+                                <Link underline="none" onClick={() => setOpen(true)}>
+                                    {itemType.name}
+                                </Link>
+                            </Typography>
+                            <Typography level="body-sm">{item.note}</Typography>
+                        </Stack>
+                        <Box sx={{ display: 'flex', gap: 2 }}>
+                            <Button size="sm" variant="soft" onClick={updateItemSubtract}>
+                                <RemoveIcon />
+                            </Button>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Typography level="h5">{item.quantity}</Typography>
+                            </Box>
+                            <Button size="sm" variant="soft" onClick={updateItemAdd}>
+                                <Add />
+                            </Button>
                         </Box>
-                        <Button size="sm" variant="soft" onClick={updateItemAdd}>
-                            <Add />
+                    </Stack>
+                </CardContent>
+            </Card>
+            <Modal open={open} onClose={() => setOpen(false)}>
+                <ModalDialog variant="outlined" role="alertdialog">
+                    <DialogTitle>
+                        <WarningRoundedIcon />
+                        Upozornění
+                    </DialogTitle>
+                    <Divider />
+                    <DialogContent>
+                        Opravdu chcete otevřít webovou stránku s produktem?
+                    </DialogContent>
+                    <DialogActions>
+                        <Button variant="solid" onClick={openWebsite}>
+                            Pokračovat
                         </Button>
-                    </Box>
-                </Stack>
-            </CardContent>
-        </Card>
+                        <Button variant="plain" color="neutral" onClick={() => setOpen(false)}>
+                            Zrušit
+                        </Button>
+                    </DialogActions>
+                </ModalDialog>
+            </Modal>
+        </>
     );
 }
 
