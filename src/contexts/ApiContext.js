@@ -36,7 +36,6 @@ export const ApiProvider = ({ children }) => {
                     console.log('Unauthorized');
                     setApiLoaded(true);
                 }
-                api.apiFailed(error);
             });
     }, [api]);
 
@@ -61,14 +60,14 @@ export const ApiProvider = ({ children }) => {
 
         setTimeout(() => {
             setApiSession(session);
-        }, 100);
+        }, 10);
 
         return false;
     };
 
     const apiFailed = (error) => {
-        console.log('Api failed:');
-        console.log(error);
+        // console.log('Api failed:');
+        // console.log(error);
 
         if (error.code === 'ERR_NETWORK') {
             console.log('API is unreachable');
@@ -78,12 +77,10 @@ export const ApiProvider = ({ children }) => {
 
         const status = error.response.status;
         if (status === 401) {
-            console.log(apiSessionLoaded, apiSession);
-            if (apiSessionLoaded) {
-                setApiSessionLoaded(false);
-                setApiSession(null);
-                clearSession();
-            }
+            // Unauthorized
+            setApiSessionLoaded(false);
+            setApiSession(null);
+            clearSession();
         }
     };
 
