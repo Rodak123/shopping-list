@@ -30,11 +30,16 @@ function ItemPopup({ onClose }) {
     useEffect(() => {
         if (api !== null) {
             const apiInstance = api.createApiInstance(apiSession);
-            apiInstance.get('/item/type').then(function (res) {
-                if (res.data) {
-                    setTypes(res.data);
-                }
-            });
+            apiInstance
+                .get('/item/type')
+                .then(function (res) {
+                    if (res.data) {
+                        setTypes(res.data);
+                    }
+                })
+                .catch((error) => {
+                    api.apiFailed(error);
+                });
         }
     }, [api]);
 
@@ -56,6 +61,9 @@ function ItemPopup({ onClose }) {
                         console.log(itemNote);
                         onClose();
                     }
+                })
+                .catch((error) => {
+                    api.apiFailed(error);
                 });
         }
     };

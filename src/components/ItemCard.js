@@ -29,11 +29,16 @@ function ItemCard({ item, refreshItems }) {
     useEffect(() => {
         if (api !== null && item !== null) {
             const apiInstance = api.createApiInstance(apiSession);
-            apiInstance.get('/item/type/' + item.item_type_id).then(function (res) {
-                if (res.data) {
-                    setItemType(res.data);
-                }
-            });
+            apiInstance
+                .get('/item/type/' + item.item_type_id)
+                .then(function (res) {
+                    if (res.data) {
+                        setItemType(res.data);
+                    }
+                })
+                .catch((error) => {
+                    api.apiFailed(error);
+                });
         }
     }, [api]);
 
@@ -58,6 +63,9 @@ function ItemCard({ item, refreshItems }) {
                         refreshItems();
                         console.log(res.data);
                     }
+                })
+                .catch((error) => {
+                    api.apiFailed(error);
                 });
         }
     };
@@ -83,6 +91,9 @@ function ItemCard({ item, refreshItems }) {
                         refreshItems();
                         console.log(res.data);
                     }
+                })
+                .catch((error) => {
+                    api.apiFailed(error);
                 });
         }
     };

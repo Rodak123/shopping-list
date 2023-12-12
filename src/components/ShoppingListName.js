@@ -21,6 +21,9 @@ function ShoppingListName() {
             .delete('/user/' + api.id + '/list/' + shoppingListsPrefs.selectedId + '/delete')
             .then(function (res) {
                 if (res.status === 200) shoppingListsPrefs.setSelectedId(-1);
+            })
+            .catch((error) => {
+                api.apiFailed(error);
             });
     };
 
@@ -37,6 +40,9 @@ function ShoppingListName() {
                     setNewShoppingListName('');
                     setRenamingShoppingList(false);
                 }
+            })
+            .catch((error) => {
+                api.apiFailed(error);
             });
     };
 

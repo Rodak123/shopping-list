@@ -36,8 +36,56 @@ export const ApiProvider = ({ children }) => {
                     console.log('Unauthorized');
                     setApiLoaded(true);
                 }
+                api.apiFailed(error);
             });
     }, [api]);
+
+    const sessionSaveKey = 'shopping_list_session';
+    const saveSession = (session) => {
+        console.log('token: ', session.token);
+        localStorage.setItem(sessionSaveKey, session.token);
+    };
+
+    const clearSession = () => {
+        localStorage.removeItem(sessionSaveKey);
+    };
+
+    const loginWithSession = () => {
+        const token = localStorage.getItem(sessionSaveKey);
+
+        if (token === null) return false;
+
+        const session = {
+            token: token,
+        };
+
+        setTimeout(() => {
+            setApiSession(session);
+        }, 100);
+
+        return false;
+    };
+
+    const apiFailed = (error) => {
+        console.log('Api failed:');
+        console.log(error);
+
+        if (error.code === 'ERR_NETWORK') {
+            console.log('API is unreachable');
+            window.location.reload();
+            return;
+        }
+
+        const status = error.response.status;
+        if (status === 401) {
+            console.log(apiSessionLoaded, apiSession);
+            if (apiSessionLoaded) {
+                setApiSessionLoaded(false);
+                setApiSession(null);
+                clearSession();
+            }
+        }
+    };
 
     const logout = () => {
         if (api !== null) {
@@ -46,6 +94,7 @@ export const ApiProvider = ({ children }) => {
                 if (res.status === 200) {
                     setApiSession(null);
                     window.location.reload();
+                    clearSession();
                 }
             });
         }
@@ -57,15 +106,19 @@ export const ApiProvider = ({ children }) => {
                 createApiInstance: createApiInstance,
                 id: 1,
             };
+
             const registerUser = () => {
+                const user_name = 'user';
+                const password = 'password';
+                const password_confirm = 'password';
                 if (api === null) return;
                 const apiInstance = api.createApiInstance();
                 //console.log('register');
                 apiInstance
                     .post('/register', {
-                        user_name: 'user',
-                        password: 'password',
-                        password_confirm: 'password',
+                        user_name: user_name,
+                        password: password,
+                        password_confirm: password_confirm,
                     })
                     .then(function (res) {
                         if (res.status === 201) {
@@ -79,17 +132,22 @@ export const ApiProvider = ({ children }) => {
             };
 
             const loginUser = () => {
+                const user_name = 'user';
+                const password = 'password';
                 if (api === null) return;
                 const apiInstance = api.createApiInstance();
                 //console.log('login');
                 apiInstance
                     .post('/login', {
-                        user_name: 'user',
-                        password: 'password',
+                        user_name: user_name,
+                        password: password,
                     })
                     .then(function (res) {
-                        setApiSession(res.data);
-                        console.log("Logged in as 'user'");
+                        console.log('Logged in as ' + user_name);
+                        const session = res.data;
+
+                        setApiSession(session);
+                        saveSession(session);
                     })
                     .catch(function (error) {
                         console.log(error);
@@ -102,6 +160,8 @@ export const ApiProvider = ({ children }) => {
 
             api.loginUser = loginUser;
             api.registerUser = registerUser;
+            api.loginWithSession = loginWithSession;
+            api.apiFailed = apiFailed;
             setApi(api);
         }
     }, [api, createApiInstance]);

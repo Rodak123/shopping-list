@@ -8,7 +8,7 @@ import { useApi } from './contexts/ApiContext';
 import { PreferencesProvider } from './contexts/PreferencesContext';
 
 function App() {
-    const { apiLoaded, apiSessionLoaded } = useApi();
+    const { api, apiLoaded, apiSessionLoaded } = useApi();
 
     if (apiLoaded === false) {
         return (
@@ -29,7 +29,25 @@ function App() {
     }
 
     if (apiSessionLoaded === false) {
-        return <Auth />;
+        if (api.loginWithSession()) {
+            return (
+                <Stack
+                    sx={{
+                        minHeight: '100vh',
+                        minWidth: '100vw',
+                    }}
+                    direction="column"
+                    justifyContent="center"
+                    alignItems="center"
+                    spacing={2}
+                >
+                    <Loading />
+                    <Typography textAlign="center">Přihlašování</Typography>
+                </Stack>
+            );
+        } else {
+            return <Auth />;
+        }
     }
 
     return (

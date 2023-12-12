@@ -22,6 +22,9 @@ function ShoppingListDisplay() {
                     setItems(res.data);
                     //console.log(res.data);
                 }
+            })
+            .catch((error) => {
+                api.apiFailed(error);
             });
     };
 

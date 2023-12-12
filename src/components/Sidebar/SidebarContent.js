@@ -25,18 +25,28 @@ function SidebarContent({ setOpen }) {
     useEffect(() => {
         if (api !== null) {
             let apiInstance = api.createApiInstance(apiSession);
-            apiInstance.get('/user/' + api.id).then(function (res) {
-                if (res.data) {
-                    setUser(res.data);
-                }
-            });
+            apiInstance
+                .get('/user/' + api.id)
+                .then(function (res) {
+                    if (res.data) {
+                        setUser(res.data);
+                    }
+                })
+                .catch((error) => {
+                    api.apiFailed(error);
+                });
 
             apiInstance = api.createApiInstance(apiSession);
-            apiInstance.get('/user/' + api.id + '/list').then(function (res) {
-                if (res.data) {
-                    setShoppingLists(res.data);
-                }
-            });
+            apiInstance
+                .get('/user/' + api.id + '/list')
+                .then(function (res) {
+                    if (res.data) {
+                        setShoppingLists(res.data);
+                    }
+                })
+                .catch((error) => {
+                    api.apiFailed(error);
+                });
         }
     }, [api, shoppingListsPrefs.selected, apiSession]);
 
@@ -67,6 +77,9 @@ function SidebarContent({ setOpen }) {
                         setShoppingLists([...shoppingLists, res.data]);
                         selectShoppingList(res.data.id);
                     }
+                })
+                .catch((error) => {
+                    api.apiFailed(error);
                 });
         }
     };

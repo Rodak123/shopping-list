@@ -24,6 +24,7 @@ export const PreferencesProvider = ({ children }) => {
                 .catch(function (error) {
                     console.error('Error fetching list:', error);
                     setSelectedShoppingListId(-1);
+                    api.apiFailed(error);
                 });
         }
     };
