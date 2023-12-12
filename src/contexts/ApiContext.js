@@ -21,7 +21,7 @@ export const ApiProvider = ({ children }) => {
         if (api === null) return;
         const apiInstance = api.createApiInstance(apiSession);
         apiInstance
-            .get('/user/' + api.id)
+            .get('/user')
             .then(function (res) {
                 if (res.data) {
                     setApiLoaded(true);
@@ -41,7 +41,6 @@ export const ApiProvider = ({ children }) => {
 
     const sessionSaveKey = 'shopping_list_session';
     const saveSession = (session) => {
-        console.log('token: ', session.token);
         localStorage.setItem(sessionSaveKey, session.token);
     };
 
@@ -90,8 +89,8 @@ export const ApiProvider = ({ children }) => {
             apiInstance.get('/logout').then(function (res) {
                 if (res.status === 200) {
                     setApiSession(null);
-                    window.location.reload();
                     clearSession();
+                    window.location.reload();
                 }
             });
         }

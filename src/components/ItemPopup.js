@@ -47,14 +47,11 @@ function ItemPopup({ onClose }) {
         if (api !== null && selectedItem !== null) {
             const apiInstance = api.createApiInstance(apiSession);
             apiInstance
-                .put(
-                    '/user/' + api.id + '/list/' + shoppingListsPrefs.selectedId + '/item/create',
-                    {
-                        type_id: selectedItem.id,
-                        note: itemNote === '' ? 'Bez popisu' : itemNote,
-                        quantity: itemQuantity,
-                    }
-                )
+                .put('/user/list/' + shoppingListsPrefs.selectedId + '/item/create', {
+                    type_id: selectedItem.id,
+                    note: itemNote === '' ? 'Bez popisu' : itemNote,
+                    quantity: itemQuantity,
+                })
                 .then(function (res) {
                     if (res.data) {
                         console.log(res.data);

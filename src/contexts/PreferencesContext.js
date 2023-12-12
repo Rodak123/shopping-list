@@ -14,7 +14,7 @@ export const PreferencesProvider = ({ children }) => {
         if (api !== null && selectedShoppingListId !== -1) {
             const apiInstance = api.createApiInstance(apiSession);
             apiInstance
-                .get('/user/' + api.id + '/list/' + selectedShoppingListId)
+                .get('/user/list/' + selectedShoppingListId)
                 .then(function (res) {
                     if (res.data) {
                         setSelectedShoppingListId(res.data.id);

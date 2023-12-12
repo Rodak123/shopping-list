@@ -26,7 +26,7 @@ function SidebarContent({ setOpen }) {
         if (api !== null) {
             let apiInstance = api.createApiInstance(apiSession);
             apiInstance
-                .get('/user/' + api.id)
+                .get('/user')
                 .then(function (res) {
                     if (res.data) {
                         setUser(res.data);
@@ -38,7 +38,7 @@ function SidebarContent({ setOpen }) {
 
             apiInstance = api.createApiInstance(apiSession);
             apiInstance
-                .get('/user/' + api.id + '/list')
+                .get('/user/list')
                 .then(function (res) {
                     if (res.data) {
                         setShoppingLists(res.data);
@@ -69,7 +69,7 @@ function SidebarContent({ setOpen }) {
         if (api !== null) {
             const apiInstance = api.createApiInstance(apiSession);
             apiInstance
-                .put('/user/' + api.id + '/list/create', {
+                .put('/user/list/create', {
                     name: 'Nový List ' + (shoppingLists.length + 1),
                 })
                 .then(function (res) {

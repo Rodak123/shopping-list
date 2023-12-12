@@ -4,17 +4,28 @@ const User = require('../models/User');
 const ItemType = require('../models/ItemType');
 const Item = require('../models/Item');
 
-const getAllUsers = async (req, res) => {
-    try {
-        const users = await User.findAll();
-        res.json(users);
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching users', error: error });
-    }
-};
+// const getAllUsers = async (req, res) => {
+//     try {
+//         const users = await User.findAll();
+//         res.json(users);
+//     } catch (error) {
+//         res.status(500).json({ message: 'Error fetching users', error: error });
+//     }
+// };
 
-const getUserById = async (req, res) => {
-    const id = req.params.id;
+// const getUserById = async (req, res) => {
+//     const id = req.params.id;
+
+//     try {
+//         const user = await User.findByPk(id);
+//         res.json(user);
+//     } catch (error) {
+//         res.status(500).json({ message: 'Error fetching user', error: error });
+//     }
+// };
+
+const getUserBySession = async (req, res) => {
+    const id = req.session.user_id;
 
     try {
         const user = await User.findByPk(id);
@@ -25,7 +36,7 @@ const getUserById = async (req, res) => {
 };
 
 const createNewList = async (req, res) => {
-    const { id } = req.params;
+    const id = req.session.user_id;
     const { name } = req.body;
 
     if (!name) {
@@ -54,7 +65,7 @@ const createNewList = async (req, res) => {
 };
 
 const getAllLists = async (req, res) => {
-    const { id } = req.params;
+    const id = req.session.user_id;
     try {
         const user = await User.findByPk(id, {
             include: ShoppingList,
@@ -72,7 +83,8 @@ const getAllLists = async (req, res) => {
 };
 
 const getListById = async (req, res) => {
-    const { id, list_id } = req.params;
+    const id = req.session.user_id;
+    const { list_id } = req.params;
     try {
         const user = await User.findByPk(id, {
             include: ShoppingList,
@@ -97,7 +109,8 @@ const getListById = async (req, res) => {
 };
 
 const renameList = async (req, res) => {
-    const { id, list_id } = req.params;
+    const id = req.session.user_id;
+    const { list_id } = req.params;
     const { name } = req.body;
     if (!name) {
         res.status(400).json({ message: 'New name is required' });
@@ -131,7 +144,8 @@ const renameList = async (req, res) => {
 };
 
 const deleteList = async (req, res) => {
-    const { id, list_id } = req.params;
+    const id = req.session.user_id;
+    const { list_id } = req.params;
     try {
         const user = await User.findByPk(id, {
             include: ShoppingList,
@@ -158,7 +172,8 @@ const deleteList = async (req, res) => {
 };
 
 const createNewItemInList = async (req, res) => {
-    const { id, list_id } = req.params;
+    const id = req.session.user_id;
+    const { list_id } = req.params;
     const { note, quantity, type_id } = req.body;
     if (!note || !quantity || !type_id) {
         res.status(400).json({ message: 'Note, quantity, and type are required' });
@@ -208,7 +223,8 @@ const createNewItemInList = async (req, res) => {
 };
 
 const getAllListItems = async (req, res) => {
-    const { id, list_id } = req.params;
+    const id = req.session.user_id;
+    const { list_id } = req.params;
     try {
         const user = await User.findByPk(id, {
             include: ShoppingList,
@@ -235,7 +251,8 @@ const getAllListItems = async (req, res) => {
 };
 
 const updateItemInList = async (req, res) => {
-    const { id, list_id, item_id } = req.params;
+    const id = req.session.user_id;
+    const { list_id, item_id } = req.params;
     const { delta_quantity } = req.body;
 
     if (delta_quantity === undefined || delta_quantity === null) {
@@ -280,8 +297,9 @@ const updateItemInList = async (req, res) => {
 };
 
 module.exports = {
-    getAllUsers: getAllUsers,
-    getUserById: getUserById,
+    //getAllUsers: getAllUsers,
+    //getUserById: getUserById,
+    getUserBySession: getUserBySession,
 
     createNewList: createNewList,
     getAllLists: getAllLists,

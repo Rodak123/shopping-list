@@ -18,7 +18,7 @@ function ShoppingListName() {
         if (!isSelectedShoppingList) return;
         const apiInstance = api.createApiInstance(apiSession);
         apiInstance
-            .delete('/user/' + api.id + '/list/' + shoppingListsPrefs.selectedId + '/delete')
+            .delete('/user/list/' + shoppingListsPrefs.selectedId + '/delete')
             .then(function (res) {
                 if (res.status === 200) shoppingListsPrefs.setSelectedId(-1);
             })
@@ -31,7 +31,7 @@ function ShoppingListName() {
         if (!isSelectedShoppingList) return;
         const apiInstance = api.createApiInstance(apiSession);
         apiInstance
-            .put('/user/' + api.id + '/list/' + shoppingListsPrefs.selectedId + '/rename', {
+            .put('/user/list/' + shoppingListsPrefs.selectedId + '/rename', {
                 name: newShoppingListName,
             })
             .then(function (res) {

@@ -16,7 +16,7 @@ function ShoppingListDisplay() {
         if (api === null || !isSelectedShoppingList) return;
         const apiInstance = api.createApiInstance(apiSession);
         apiInstance
-            .get('/user/' + api.id + '/list/' + shoppingListsPrefs.selectedId + '/item')
+            .get('/user/list/' + shoppingListsPrefs.selectedId + '/item')
             .then(function (res) {
                 if (res.data) {
                     setItems(res.data);
