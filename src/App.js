@@ -29,7 +29,6 @@ function App() {
     }
 
     if (apiSessionLoaded === false) {
-        console.log("No session, auth'ing");
         return <Auth />;
     }
 

@@ -96,27 +96,23 @@ const loadProductTaxonomy = require('../loadProductTaxonomy');
 const authorization = async (req, res, next) => {
     const authheader = req.headers.authorization;
 
-    console.log('Authorization:');
-    console.log(authheader);
     if (!authheader) {
         return res.status(401).json({ message: 'No authorization header' });
     }
 
     try {
         const session = await AuthSession.findOne({ where: { token: authheader } });
-        console.log('Session:');
-        console.log(session);
         if (!session) {
             return res.status(401).json({ message: 'Invalid token' });
         }
+
         req.session = session;
-        console.log(session);
+
+        return next();
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: 'Error validating token', error: error });
     }
-
-    next();
 };
 
 const app = express();

@@ -60,7 +60,7 @@ export const ApiProvider = ({ children }) => {
             const registerUser = () => {
                 if (api === null) return;
                 const apiInstance = api.createApiInstance();
-                console.log('register');
+                //console.log('register');
                 apiInstance
                     .post('/register', {
                         user_name: 'user',
@@ -81,7 +81,7 @@ export const ApiProvider = ({ children }) => {
             const loginUser = () => {
                 if (api === null) return;
                 const apiInstance = api.createApiInstance();
-                console.log('login');
+                //console.log('login');
                 apiInstance
                     .post('/login', {
                         user_name: 'user',
@@ -113,7 +113,6 @@ export const ApiProvider = ({ children }) => {
     }, [apiLoaded, api, loadApi, apiSession]);
 
     useEffect(() => {
-        console.log('Api session changed', apiSession === null);
         setApiSessionLoaded(apiSession !== null);
     }, [apiSession]);
 
