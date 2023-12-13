@@ -103,10 +103,9 @@ export const ApiProvider = ({ children }) => {
                 id: 1,
             };
 
-            const registerUser = (user_name, password, password_confirm) => {
+            const registerUser = (user_name, password, password_confirm, setError) => {
                 if (api === null) return;
                 const apiInstance = api.createApiInstance();
-                //console.log('register');
                 apiInstance
                     .post('/register', {
                         user_name: user_name,
@@ -116,7 +115,7 @@ export const ApiProvider = ({ children }) => {
                     .then(function (res) {
                         if (res.status === 201) {
                             //console.log('Registered as ' + res.data.user_name);
-                            loginUser(user_name, password);
+                            loginUser(user_name, password, setError);
                         }
                     })
                     .catch(function (error) {
@@ -124,7 +123,7 @@ export const ApiProvider = ({ children }) => {
                     });
             };
 
-            const loginUser = (user_name, password) => {
+            const loginUser = (user_name, password, setError) => {
                 if (api === null) return;
                 const apiInstance = api.createApiInstance();
                 //console.log('login');
@@ -139,12 +138,14 @@ export const ApiProvider = ({ children }) => {
 
                         setApiSession(session);
                         saveSession(session);
+                        setError(null);
                     })
-                    .catch(function (error) {
-                        console.log(error);
-                        if (error.response.status === 404) {
-                            registerUser(user_name, password, password);
+                    .catch(function (err) {
+                        if (err.response.status === 404) {
+                            registerUser(user_name, password, password, setError);
                             //console.log('User not found');
+                        } else if (err.response.status === 401) {
+                            setError('Wrong password');
                         }
                     });
             };
