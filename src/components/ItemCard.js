@@ -4,6 +4,7 @@ import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
 import Button from '@mui/joy/Button';
 import Card from '@mui/joy/Card';
 import CardContent from '@mui/joy/CardContent';
+import Checkbox from '@mui/joy/Checkbox';
 import DialogActions from '@mui/joy/DialogActions';
 import DialogContent from '@mui/joy/DialogContent';
 import DialogTitle from '@mui/joy/DialogTitle';
@@ -24,6 +25,27 @@ function ItemCard({ item, refreshItems }) {
     const [itemType, setItemType] = useState(null);
     const { shoppingListsPrefs } = usePreferences();
     const [open, setOpen] = useState(false);
+
+    const onCheckboxToggled = () => {
+        if (api !== null) {
+            const apiInstance = api.createApiInstance(apiSession);
+            apiInstance
+                .put(
+                    '/user/list/' + shoppingListsPrefs.selectedId + '/item/' + item.id + '/update',
+                    {
+                        checked: !item.checked,
+                    }
+                )
+                .then(function (res) {
+                    if (res.status === 201) {
+                        refreshItems();
+                    }
+                })
+                .catch((error) => {
+                    api.apiFailed(error);
+                });
+        }
+    };
 
     useEffect(() => {
         if (api !== null && item !== null) {
@@ -111,14 +133,25 @@ function ItemCard({ item, refreshItems }) {
             <Card variant="outlined">
                 <CardContent>
                     <Stack direction="row" justifyContent="space-between">
-                        <Stack direction="column" justifyContent="flex-start">
-                            <Typography level="title-md">
-                                <Link overlay></Link>
-                                <Link underline="none" onClick={() => setOpen(true)}>
-                                    {itemType.name}
-                                </Link>
-                            </Typography>
-                            <Typography level="body-sm">{item.note}</Typography>
+                        <Stack direction="row" spacing={2}>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Checkbox
+                                    checked={item.checked}
+                                    onChange={onCheckboxToggled}
+                                    size="lg"
+                                    color="neutral"
+                                    variant="outlined"
+                                />
+                            </Box>
+                            <Stack direction="column" justifyContent="flex-start">
+                                <Typography level="title-md">
+                                    <Link overlay></Link>
+                                    <Link underline="none" onClick={() => setOpen(true)}>
+                                        {itemType.name}
+                                    </Link>
+                                </Typography>
+                                <Typography level="body-sm">{item.note}</Typography>
+                            </Stack>
                         </Stack>
                         <Box sx={{ display: 'flex', gap: 2 }}>
                             <Button size="sm" variant="soft" onClick={updateItemSubtract}>

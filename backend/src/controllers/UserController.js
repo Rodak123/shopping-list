@@ -242,7 +242,9 @@ const getAllListItems = async (req, res) => {
             return;
         }
 
-        const items = await list.getItems();
+        const items = await list.getItems({
+            order: [['checked', 'ASC']],
+        });
 
         res.status(200).json(items);
     } catch (error) {
@@ -253,11 +255,13 @@ const getAllListItems = async (req, res) => {
 const updateItemInList = async (req, res) => {
     const id = req.session.user_id;
     const { list_id, item_id } = req.params;
-    const { delta_quantity } = req.body;
+    let { delta_quantity, checked } = req.body;
 
     if (delta_quantity === undefined || delta_quantity === null) {
         delta_quantity = 0;
     }
+
+    const change_checked = checked === true || checked === false;
 
     try {
         const user = await User.findByPk(id, {
@@ -287,6 +291,7 @@ const updateItemInList = async (req, res) => {
         }
 
         item.quantity = item.quantity + delta_quantity;
+        if (change_checked) item.checked = checked;
 
         await item.save();
 
