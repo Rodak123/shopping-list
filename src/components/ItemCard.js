@@ -118,9 +118,14 @@ function ItemCard({ item, refreshItems }) {
         );
     };
 
+    const cardStyle = {
+        variant: 'outlined',
+        color: 'neutral',
+    };
+
     if (itemType === null) {
         return (
-            <Card variant="outlined">
+            <Card {...cardStyle}>
                 <CardContent>
                     <Loading />
                 </CardContent>
@@ -130,7 +135,7 @@ function ItemCard({ item, refreshItems }) {
 
     return (
         <>
-            <Card variant="outlined">
+            <Card {...cardStyle}>
                 <CardContent>
                     <Stack direction="row" justifyContent="space-between">
                         <Stack direction="row" spacing={2}>
