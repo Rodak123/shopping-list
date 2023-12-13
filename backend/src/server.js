@@ -106,6 +106,11 @@ const authorization = async (req, res, next) => {
             return res.status(401).json({ message: 'Invalid token' });
         }
 
+        if (session.date_expires.getTime() < new Date()) {
+            await session.destroy();
+            return res.status(401).json({ message: 'Session is expired' });
+        }
+
         req.session = session;
 
         return next();
@@ -192,7 +197,7 @@ app.post('/login', async (req, res) => {
 
         await AuthSession.destroy({ where: { user_id: user.id } });
 
-        const date_expires = new Date(Date.now() + 1000 * 60 * 60 * 24 * 3); // +3 days
+        const date_expires = new Date(Date.now() + 1000 * 60 * 60 * 24 * 1); // +1 days
 
         const generatedToken = bcrypt.hashSync(user.id + date_expires, saltRounds);
 
