@@ -103,10 +103,7 @@ export const ApiProvider = ({ children }) => {
                 id: 1,
             };
 
-            const registerUser = () => {
-                const user_name = 'user';
-                const password = 'password';
-                const password_confirm = 'password';
+            const registerUser = (user_name, password, password_confirm) => {
                 if (api === null) return;
                 const apiInstance = api.createApiInstance();
                 //console.log('register');
@@ -119,7 +116,7 @@ export const ApiProvider = ({ children }) => {
                     .then(function (res) {
                         if (res.status === 201) {
                             //console.log('Registered as ' + res.data.user_name);
-                            loginUser();
+                            loginUser(user_name, password);
                         }
                     })
                     .catch(function (error) {
@@ -127,9 +124,7 @@ export const ApiProvider = ({ children }) => {
                     });
             };
 
-            const loginUser = () => {
-                const user_name = 'user';
-                const password = 'password';
+            const loginUser = (user_name, password) => {
                 if (api === null) return;
                 const apiInstance = api.createApiInstance();
                 //console.log('login');
@@ -148,7 +143,7 @@ export const ApiProvider = ({ children }) => {
                     .catch(function (error) {
                         console.log(error);
                         if (error.response.status === 404) {
-                            registerUser();
+                            registerUser(user_name, password, password);
                             //console.log('User not found');
                         }
                     });

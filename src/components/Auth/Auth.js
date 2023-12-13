@@ -7,7 +7,13 @@ const Auth = () => {
 
     return (
         <>
-            <Button onClick={api.loginUser}>Přihlaš se</Button>
+            <Button
+                onClick={() => {
+                    api.loginUser('user', 'password');
+                }}
+            >
+                Přihlaš se
+            </Button>
             {/* <Button onClick={api.registerUser}>Registruj se</Button> */}
         </>
     );
