@@ -1,9 +1,16 @@
 import Add from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
 import Button from '@mui/joy/Button';
 import Card from '@mui/joy/Card';
 import CardContent from '@mui/joy/CardContent';
+import DialogActions from '@mui/joy/DialogActions';
+import DialogContent from '@mui/joy/DialogContent';
+import DialogTitle from '@mui/joy/DialogTitle';
+import Divider from '@mui/joy/Divider';
 import Link from '@mui/joy/Link';
+import Modal from '@mui/joy/Modal';
+import ModalDialog from '@mui/joy/ModalDialog';
 import Typography from '@mui/joy/Typography';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/system/Box';
@@ -11,14 +18,6 @@ import { useEffect, useState } from 'react';
 import { useApi } from '../contexts/ApiContext';
 import { usePreferences } from '../contexts/PreferencesContext';
 import Loading from './Loading';
-import Divider from '@mui/joy/Divider';
-import DialogTitle from '@mui/joy/DialogTitle';
-import DialogContent from '@mui/joy/DialogContent';
-import DialogActions from '@mui/joy/DialogActions';
-import Modal from '@mui/joy/Modal';
-import ModalDialog from '@mui/joy/ModalDialog';
-import DeleteForever from '@mui/icons-material/DeleteForever';
-import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
 
 function ItemCard({ item, refreshItems }) {
     const { api, apiSession } = useApi();
@@ -47,13 +46,7 @@ function ItemCard({ item, refreshItems }) {
             const apiInstance = api.createApiInstance(apiSession);
             apiInstance
                 .put(
-                    '/user/' +
-                        api.id +
-                        '/list/' +
-                        shoppingListsPrefs.selectedId +
-                        '/item/' +
-                        item.id +
-                        '/update',
+                    '/user/list/' + shoppingListsPrefs.selectedId + '/item/' + item.id + '/update',
                     {
                         delta_quantity: -1,
                     }
@@ -61,7 +54,6 @@ function ItemCard({ item, refreshItems }) {
                 .then(function (res) {
                     if (res.data) {
                         refreshItems();
-                        console.log(res.data);
                     }
                 })
                 .catch((error) => {
@@ -75,13 +67,7 @@ function ItemCard({ item, refreshItems }) {
             const apiInstance = api.createApiInstance(apiSession);
             apiInstance
                 .put(
-                    '/user/' +
-                        api.id +
-                        '/list/' +
-                        shoppingListsPrefs.selectedId +
-                        '/item/' +
-                        item.id +
-                        '/update',
+                    '/user/list/' + shoppingListsPrefs.selectedId + '/item/' + item.id + '/update',
                     {
                         delta_quantity: +1,
                     }
