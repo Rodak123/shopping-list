@@ -13,6 +13,11 @@ const User = sequelize.define('User', {
         allowNull: false,
         min: 0,
     },
+    uid: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        min: 0,
+    },
 });
 
 module.exports = User;

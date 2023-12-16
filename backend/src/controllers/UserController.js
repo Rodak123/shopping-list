@@ -1,4 +1,3 @@
-const e = require('express');
 const ShoppingList = require('../models/ShoppingList');
 const User = require('../models/User');
 const ItemType = require('../models/ItemType');

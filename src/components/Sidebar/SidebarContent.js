@@ -1,5 +1,4 @@
 import {
-    Avatar,
     Box,
     Button,
     DialogContent,
@@ -13,8 +12,8 @@ import {
 import { useEffect, useState } from 'react';
 import { useApi } from '../../contexts/ApiContext';
 import { usePreferences } from '../../contexts/PreferencesContext';
-import DateFormatter from '../DateFormatter';
 import Loading from '../Loading';
+import AccountDisplay from './AccountDisplay';
 
 function SidebarContent({ setOpen }) {
     const { api, apiSession, logout } = useApi();
@@ -89,9 +88,6 @@ function SidebarContent({ setOpen }) {
         setOpen(false);
     };
 
-    const username = user.user_name;
-    const dateJoined = user.createdAt;
-
     const selectedList = shoppingListsPrefs.selectedId;
     const shoppingListsDom = shoppingLists.map((shoppingList) => {
         return (
@@ -147,24 +143,7 @@ function SidebarContent({ setOpen }) {
                     borderColor: 'divider',
                 }}
             >
-                <Avatar size="lg" />
-                <Stack
-                    flexGrow="1"
-                    direction="row"
-                    justifyContent="space-between"
-                    useFlexGap
-                    spacing={1}
-                >
-                    <div>
-                        <Typography level="title-md">{username}</Typography>
-                        <Typography level="body-sm">
-                            od <DateFormatter date={dateJoined} />
-                        </Typography>
-                    </div>
-                    <Button variant="outlined" onClick={logout}>
-                        Odhlasit se{' '}
-                    </Button>
-                </Stack>
+                <AccountDisplay user={user} />
             </Box>
         </>
     );

@@ -46,6 +46,15 @@ function ShoppingListName() {
             });
     };
 
+    const shareList = () => {
+        // if (!isSelectedShoppingList) return;
+        // const userUID = 'key';
+        // const apiInstance = api.createApiInstance(apiSession);
+        // apiInstance.post('/user/list/' + shoppingListsPrefs.selectedId + '/share', {
+        //     with: userUID,
+        // });
+    };
+
     return (
         <Box
             sx={{
@@ -98,6 +107,13 @@ function ShoppingListName() {
                                     }}
                                 >
                                     Přejmenovat
+                                </MenuItem>
+                                <MenuItem
+                                    onClick={() => {
+                                        shareList();
+                                    }}
+                                >
+                                    Sdílet
                                 </MenuItem>
                             </Menu>
                         </Dropdown>
