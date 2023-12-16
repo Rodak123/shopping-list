@@ -1,7 +1,11 @@
+import { wait } from '@testing-library/user-event/dist/utils';
 import axios from 'axios';
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 
 const ApiContext = createContext();
+
+// Create the AlertContext
+export const AlertContext = createContext();
 
 export const ApiProvider = ({ children }) => {
     const [api, setApi] = useState(null);
@@ -9,6 +13,9 @@ export const ApiProvider = ({ children }) => {
 
     const [apiSession, setApiSession] = useState(null);
     const [apiSessionLoaded, setApiSessionLoaded] = useState(false);
+
+    // Add a state variable for registration alert
+    const [isRegistering, setIsRegistering] = useState(false);
 
     const createApiInstance = (apiSession) => {
         return axios.create({
@@ -19,7 +26,7 @@ export const ApiProvider = ({ children }) => {
 
     const loadApi = useCallback(() => {
         if (api === null) return;
-        const apiInstance = api.createApiInstance(apiSession);
+        const apiInstance = createApiInstance(apiSession);
         apiInstance
             .get('/user')
             .then(function (res) {
@@ -37,7 +44,7 @@ export const ApiProvider = ({ children }) => {
                     setApiLoaded(true);
                 }
             });
-    }, [api]);
+    }, [api, apiSession]);
 
     const sessionSaveKey = 'shopping_list_session';
     const saveSession = (session) => {
@@ -142,8 +149,11 @@ export const ApiProvider = ({ children }) => {
                     })
                     .catch(function (err) {
                         if (err.response.status === 404) {
-                            registerUser(user_name, password, password, setError);
-                            //console.log('User not found');
+                            setIsRegistering(true);
+                            setTimeout(() => {
+                                registerUser(user_name, password, password, setError);
+                            }, 2000);
+                            //console.log('Registered');
                         } else if (err.response.status === 401) {
                             setError('Wrong password');
                         }
@@ -169,10 +179,10 @@ export const ApiProvider = ({ children }) => {
     }, [apiSession]);
 
     return (
-        <ApiContext.Provider
-            value={{ api, apiLoaded, apiSession, setApiSession, apiSessionLoaded, logout }}
-        >
-            {children}
+        <ApiContext.Provider value={{ api, apiLoaded, apiSession, apiSessionLoaded, logout }}>
+            <AlertContext.Provider value={{ isRegistering, setIsRegistering }}>
+                {children}
+            </AlertContext.Provider>
         </ApiContext.Provider>
     );
 };
