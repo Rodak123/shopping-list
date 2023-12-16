@@ -119,7 +119,7 @@ function ItemCard({ item, refreshItems }) {
     };
 
     const cardStyle = {
-        variant: 'outlined',
+        variant: item.checked ? 'soft' : 'outlined',
         color: 'neutral',
     };
 
