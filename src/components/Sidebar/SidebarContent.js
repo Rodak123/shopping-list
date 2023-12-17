@@ -16,26 +16,16 @@ import Loading from '../Loading';
 import AccountDisplay from './AccountDisplay';
 
 function SidebarContent({ setOpen }) {
-    const { api, apiSession, logout } = useApi();
-    const { shoppingListsPrefs } = usePreferences();
-    const [user, setUser] = useState(null);
+    const { api, apiSession } = useApi();
+    const { shoppingListsPrefs, userPrefs } = usePreferences();
+
     const [shoppingLists, setShoppingLists] = useState([]);
+
+    const user = userPrefs.user;
 
     useEffect(() => {
         if (api !== null) {
-            let apiInstance = api.createApiInstance(apiSession);
-            apiInstance
-                .get('/user')
-                .then(function (res) {
-                    if (res.data) {
-                        setUser(res.data);
-                    }
-                })
-                .catch((error) => {
-                    api.apiFailed(error);
-                });
-
-            apiInstance = api.createApiInstance(apiSession);
+            const apiInstance = api.createApiInstance(apiSession);
             apiInstance
                 .get('/user/list')
                 .then(function (res) {

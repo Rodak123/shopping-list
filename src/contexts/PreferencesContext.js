@@ -9,6 +9,8 @@ export const PreferencesProvider = ({ children }) => {
     const [selectedShoppingListId, setSelectedShoppingListId] = useState(-1);
     const [selectedShoppingList, setSelectedShoppingList] = useState(null);
 
+    const [user, setUser] = useState(null);
+
     const refreshSelected = () => {
         setSelectedShoppingList(null);
         if (api !== null && selectedShoppingListId !== -1) {
@@ -29,9 +31,30 @@ export const PreferencesProvider = ({ children }) => {
         }
     };
 
+    const fetchUser = () => {
+        if (api !== null) {
+            setUser(null);
+            const apiInstance = api.createApiInstance(apiSession);
+            apiInstance
+                .get('/user')
+                .then(function (res) {
+                    if (res.data) {
+                        setUser(res.data);
+                    }
+                })
+                .catch((error) => {
+                    api.apiFailed(error);
+                });
+        }
+    };
+
     useEffect(() => {
         refreshSelected();
     }, [api, selectedShoppingListId]);
+
+    useEffect(() => {
+        fetchUser();
+    }, [api, apiSession]);
 
     return (
         <PreferencesContext.Provider
@@ -41,6 +64,10 @@ export const PreferencesProvider = ({ children }) => {
                     selectedId: selectedShoppingListId,
                     setSelectedId: setSelectedShoppingListId,
                     refreshSelected: refreshSelected,
+                },
+                userPrefs: {
+                    user: user,
+                    fetchUser: fetchUser,
                 },
             }}
         >

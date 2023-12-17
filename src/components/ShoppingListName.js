@@ -1,15 +1,28 @@
 import MoreVert from '@mui/icons-material/MoreVert';
-import { Dropdown, IconButton, Input, Menu, MenuButton, MenuItem, Typography } from '@mui/joy';
+import {
+    Dropdown,
+    IconButton,
+    Input,
+    Menu,
+    MenuButton,
+    MenuItem,
+    Typography,
+    Modal,
+    ModalDialog,
+} from '@mui/joy';
 import Box from '@mui/joy/Box';
 import { useState } from 'react';
 import { useApi } from '../contexts/ApiContext';
 import { usePreferences } from '../contexts/PreferencesContext';
+import SharePopup from './SharePopup';
 
 function ShoppingListName() {
     const { api, apiSession } = useApi();
     const { shoppingListsPrefs } = usePreferences();
 
     const [renamingShoppingList, setRenamingShoppingList] = useState(false);
+    const [sharingPopupOpen, setSharingPopupOpen] = useState(false);
+
     const [newShoppingListName, setNewShoppingListName] = useState('');
 
     const isSelectedShoppingList = shoppingListsPrefs.selected !== null;
@@ -29,6 +42,11 @@ function ShoppingListName() {
 
     const renameList = () => {
         if (!isSelectedShoppingList) return;
+        if (newShoppingListName === '') {
+            setRenamingShoppingList(false);
+            return;
+        }
+
         const apiInstance = api.createApiInstance(apiSession);
         apiInstance
             .put('/user/list/' + shoppingListsPrefs.selectedId + '/rename', {
@@ -47,12 +65,17 @@ function ShoppingListName() {
     };
 
     const shareList = () => {
+        setSharingPopupOpen(true);
         // if (!isSelectedShoppingList) return;
         // const userUID = 'key';
         // const apiInstance = api.createApiInstance(apiSession);
         // apiInstance.post('/user/list/' + shoppingListsPrefs.selectedId + '/share', {
         //     with: userUID,
         // });
+    };
+
+    const onSharePopupClose = () => {
+        setSharingPopupOpen(false);
     };
 
     return (
@@ -118,6 +141,17 @@ function ShoppingListName() {
                             </Menu>
                         </Dropdown>
                     )}
+                    <Modal open={sharingPopupOpen} onClose={onSharePopupClose}>
+                        <ModalDialog
+                            layout="center"
+                            size="lg"
+                            sx={{
+                                padding: 0,
+                            }}
+                        >
+                            <SharePopup onClose={onSharePopupClose} />
+                        </ModalDialog>
+                    </Modal>
                 </>
             )}
         </Box>

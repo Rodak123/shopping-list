@@ -52,6 +52,7 @@ const createNewList = async (req, res) => {
 
         const shoppingList = await ShoppingList.create({
             name: name,
+            owner: user.id,
         });
 
         await user.addShoppingList(shoppingList);
@@ -162,9 +163,15 @@ const deleteList = async (req, res) => {
             return;
         }
 
-        await list.destroy();
+        if (list.owner !== user.id) {
+            user.ShoppingLists.remove(list);
+            await user.save();
+            res.status(200).json(list);
+        } else {
+            await list.destroy();
 
-        res.status(200).json(list);
+            res.status(200).json(list);
+        }
     } catch (error) {
         res.status(400).json({ message: 'Error deleting list', error: error });
     }
@@ -300,6 +307,60 @@ const updateItemInList = async (req, res) => {
     }
 };
 
+const shareShoppingList = async (req, res) => {
+    const id = req.session.user_id;
+    const { list_id } = req.params;
+    const { with: user_uid } = req.body;
+
+    if (!user_uid) {
+        res.status(400).json({ message: 'User UID is required' });
+        return;
+    }
+
+    try {
+        const user = await User.findByPk(id, {
+            include: ShoppingList,
+        });
+
+        if (!user) {
+            res.status(404).json({ message: 'User not found' });
+            return;
+        }
+
+        const list = user.ShoppingLists.find((list) => list.id == list_id);
+
+        if (!list) {
+            res.status(404).json({ message: 'List not found' });
+            return;
+        }
+
+        const userToShareWith = await User.findOne({
+            where: {
+                uid: user_uid,
+            },
+        });
+
+        if (!userToShareWith) {
+            res.status(404).json({ message: 'User to share with not found' });
+            return;
+        }
+
+        if (userToShareWith.id === user.id) {
+            res.status(400).json({ message: 'Cannot share list with yourself' });
+            return;
+        }
+
+        await userToShareWith.addShoppingList(list);
+
+        res.status(200).json({
+            user_name: userToShareWith.user_name,
+            uid: userToShareWith.uid,
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error sharing list', error: error });
+    }
+};
+
 module.exports = {
     //getAllUsers: getAllUsers,
     //getUserById: getUserById,
@@ -314,4 +375,6 @@ module.exports = {
     createNewItemInList: createNewItemInList,
     getAllListItems: getAllListItems,
     updateItemInList: updateItemInList,
+
+    shareShoppingList: shareShoppingList,
 };

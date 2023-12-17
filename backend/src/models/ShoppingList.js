@@ -8,6 +8,10 @@ const ShoppingList = sequelize.define('ShoppingList', {
         min: 0,
         max: 60,
     },
+    owner: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
 });
 
 module.exports = ShoppingList;

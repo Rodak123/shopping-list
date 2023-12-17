@@ -16,4 +16,6 @@ router.put('/list/:list_id/item/create', UserController.createNewItemInList);
 router.get('/list/:list_id/item/', UserController.getAllListItems);
 router.put('/list/:list_id/item/:item_id/update', UserController.updateItemInList);
 
+router.post('/list/:list_id/share', UserController.shareShoppingList);
+
 module.exports = router;

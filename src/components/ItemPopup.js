@@ -7,9 +7,9 @@ import {
     Divider,
     FormControl,
     FormLabel,
+    Grid,
     Input,
     ModalClose,
-    Stack,
     Typography,
 } from '@mui/joy';
 import * as React from 'react';
@@ -23,8 +23,8 @@ function ItemPopup({ onClose }) {
     const { shoppingListsPrefs } = usePreferences();
     const [types, setTypes] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
+
     const [itemNote, setItemNote] = useState('');
-    const [note, setNote] = useState('');
     const [itemQuantity, setItemQuantity] = useState(1);
 
     useEffect(() => {
@@ -65,14 +65,8 @@ function ItemPopup({ onClose }) {
         }
     };
     const cardStyle = {
-        variant: 'outlined',
-        sx: {
-            maxHeight: 'max-content',
-            maxWidth: '100%',
-            margin: '0 !important',
-            mx: 'auto',
-            overflow: 'hidden',
-        },
+        variant: 'plain',
+        color: 'primary',
     };
 
     if (types.length === 0) {
@@ -98,46 +92,46 @@ function ItemPopup({ onClose }) {
     return (
         <Card {...cardStyle}>
             <Typography level="title-lg">Přidat položku</Typography>
-            <ModalClose variant="plain" sx={{ m: 0 }} />
+            <ModalClose variant="plain" />
             <Divider inset="none" />
-            <CardContent
-                sx={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(3, minmax(80px, 1fr))',
-                    gap: 1.5,
-                }}
-            >
-                <FormControl sx={{ gridColumn: '1/-1' }}>
-                    <FormLabel>Název položky</FormLabel>
-                    <Autocomplete
-                        options={selectTypes}
-                        placeholder="Název položky"
-                        onChange={(event, newValue) => {
-                            setSelectedItem(newValue);
-                        }}
-                        isOptionEqualToValue={(option, value) => option.id === value.id}
-                    />
-                </FormControl>
-                <Stack direction="row" spacing={1} sx={{ gridColumn: '1/-1' }}>
-                    <FormControl sx={{ gridColumn: '1/-1' }}>
-                        <FormLabel>Popis položky</FormLabel>
-                        <Input
-                            placeholder="Popis položky"
-                            value={itemNote}
-                            onChange={(event) => setItemNote(event.target.value)}
-                        />
-                    </FormControl>
-                    <FormControl sx={{ gridColumn: '1/-1' }}>
-                        <FormLabel>Počet položky</FormLabel>
-                        <Input
-                            placeholder="Počet položky"
-                            type="number"
-                            value={itemQuantity}
-                            onChange={(event) => setItemQuantity(event.target.value)}
-                        />
-                    </FormControl>
-                </Stack>
-                <CardActions sx={{ gridColumn: '1/-1' }}>
+            <CardContent>
+                <Grid container spacing={2}>
+                    <Grid xs={12}>
+                        <FormControl>
+                            <FormLabel>Název položky</FormLabel>
+                            <Autocomplete
+                                options={selectTypes}
+                                placeholder="Název položky"
+                                onChange={(event, newValue) => {
+                                    setSelectedItem(newValue);
+                                }}
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
+                            />
+                        </FormControl>
+                    </Grid>
+                    <Grid xs={12} md={6}>
+                        <FormControl>
+                            <FormLabel>Popis položky</FormLabel>
+                            <Input
+                                placeholder="Popis položky"
+                                value={itemNote}
+                                onChange={(event) => setItemNote(event.target.value)}
+                            />
+                        </FormControl>
+                    </Grid>
+                    <Grid xs={12} md={6}>
+                        <FormControl>
+                            <FormLabel>Počet položky</FormLabel>
+                            <Input
+                                placeholder="Počet položky"
+                                type="number"
+                                value={itemQuantity}
+                                onChange={(event) => setItemQuantity(event.target.value)}
+                            />
+                        </FormControl>
+                    </Grid>
+                </Grid>
+                <CardActions>
                     <Button variant="solid" color="primary" onClick={addItem}>
                         Přidat
                     </Button>
