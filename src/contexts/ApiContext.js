@@ -120,7 +120,7 @@ export const ApiProvider = ({ children }) => {
                     })
                     .catch(function (error) {
                         const errType = error.response.data.type ?? 'unknown';
-                        console.log(errType);
+                        //console.log(errType);
                         switch (errType) {
                             case 'passwordMatch':
                                 setError('Hesla se neshodují');

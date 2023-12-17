@@ -1,11 +1,15 @@
-import { Avatar, Button, Stack, Typography } from '@mui/joy';
+import { Avatar, Box, Button, Stack, Tooltip, Typography } from '@mui/joy';
 import { useApi } from '../../contexts/ApiContext';
 import DateFormatter from '../DateFormatter';
 
 function AccountDisplay({ user }) {
     const { logout } = useApi();
 
-    console.log(user.uid);
+    //console.log(user.uid);
+
+    const copyUID = () => {
+        navigator.clipboard.writeText(user.uid);
+    };
 
     const username = user.user_name;
     const dateJoined = user.createdAt;
@@ -20,14 +24,18 @@ function AccountDisplay({ user }) {
                 useFlexGap
                 spacing={1}
             >
-                <div>
-                    <Typography level="title-md">{username}</Typography>
+                <Box>
+                    <Tooltip placement="top" variant="soft" title="Kopirovat Vaše UID?">
+                        <Button variant="plain" color="neutral" onClick={copyUID}>
+                            <Typography level="title-md">{username}</Typography>
+                        </Button>
+                    </Tooltip>
                     <Typography level="body-sm">
                         od <DateFormatter date={dateJoined} />
                     </Typography>
-                </div>
+                </Box>
                 <Button variant="outlined" onClick={logout}>
-                    Odhlasit se{' '}
+                    Odhlasit se
                 </Button>
             </Stack>
         </>

@@ -138,9 +138,9 @@ function SidebarContent({ setOpen }) {
                     display: 'flex',
                     gap: 1,
                     p: 1.5,
-                    pb: 2,
                     borderTop: '1px solid',
                     borderColor: 'divider',
+                    alignItems: 'center',
                 }}
             >
                 <AccountDisplay user={user} />
