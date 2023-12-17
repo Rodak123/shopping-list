@@ -18,11 +18,15 @@ const register = async (req, res) => {
         const existingUser = await User.findOne({ where: { user_name: user_name } });
 
         if (existingUser) {
-            return res.status(400).json({ message: 'User name already exists' });
+            return res
+                .status(400)
+                .json({ type: 'userExists', message: 'User name already exists' });
         }
 
         if (password !== password_confirm) {
-            return res.status(400).json({ message: 'Passwords do not match' });
+            return res
+                .status(400)
+                .json({ type: 'passwordMatch', message: 'Passwords do not match' });
         }
 
         const hashedPassword = await bcrypt.hash(password, saltRounds);

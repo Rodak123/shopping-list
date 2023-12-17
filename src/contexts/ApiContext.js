@@ -3,18 +3,12 @@ import React, { createContext, useCallback, useContext, useEffect, useState } fr
 
 const ApiContext = createContext();
 
-// Create the AlertContext
-export const AlertContext = createContext();
-
 export const ApiProvider = ({ children }) => {
     const [api, setApi] = useState(null);
     const [apiLoaded, setApiLoaded] = useState(false);
 
     const [apiSession, setApiSession] = useState(null);
     const [apiSessionLoaded, setApiSessionLoaded] = useState(false);
-
-    // Add a state variable for registration alert
-    const [isRegistering, setIsRegistering] = useState(false);
 
     const createApiInstance = (apiSession) => {
         return axios.create({
@@ -125,7 +119,19 @@ export const ApiProvider = ({ children }) => {
                         }
                     })
                     .catch(function (error) {
-                        console.log(error);
+                        const errType = error.response.data.type ?? 'unknown';
+                        console.log(errType);
+                        switch (errType) {
+                            case 'passwordMatch':
+                                setError('Hesla se neshodují');
+                                break;
+                            case 'userExists':
+                                setError('Uživatel již existuje');
+                                break;
+                            default:
+                                setError('Nepodařilo se zaregistrovat');
+                                break;
+                        }
                     });
             };
 
@@ -147,15 +153,17 @@ export const ApiProvider = ({ children }) => {
                         setError(null);
                     })
                     .catch(function (err) {
-                        if (err.response.status === 404) {
-                            setIsRegistering(true);
-                            setTimeout(() => {
-                                registerUser(user_name, password, password, setError);
-                            }, 2000);
-                            //console.log('Registered');
-                        } else if (err.response.status === 401) {
-                            setError('Wrong password');
-                        }
+                        // if (err.response.status === 404) {
+                        //     // setIsRegistering(true);
+                        //     // setTimeout(() => {
+                        //     //     registerUser(user_name, password, password, setError);
+                        //     // }, 2000);
+                        //     //console.log('Registered');
+                        //     setError('Špatné uživatelské jméno nebo heslo');
+                        // } else if (err.response.status === 401) {
+                        //     setError('Špatné uživatelské jméno nebo heslo');
+                        // }
+                        setError('Špatné uživatelské jméno nebo heslo');
                     });
             };
 
@@ -179,9 +187,7 @@ export const ApiProvider = ({ children }) => {
 
     return (
         <ApiContext.Provider value={{ api, apiLoaded, apiSession, apiSessionLoaded, logout }}>
-            <AlertContext.Provider value={{ isRegistering, setIsRegistering }}>
-                {children}
-            </AlertContext.Provider>
+            {children}
         </ApiContext.Provider>
     );
 };
