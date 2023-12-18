@@ -107,7 +107,10 @@ function ItemCard({ item, refreshItems }) {
     };
 
     const itemSearchUrl = itemType
-        ? 'https://www.google.com/search?q=' + itemType.name + '%20' + item.note + '&tbm=shop&hl=cs'
+        ? 'https://www.google.com/search?q=' +
+          itemType.name +
+          (item.note !== 'Bez popisu' ? +'%20' + item.note : '') +
+          '&tbm=shop&hl=cs'
         : '';
     const openWebsite = () => {
         setOpen(false);
