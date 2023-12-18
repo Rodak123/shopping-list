@@ -106,16 +106,12 @@ function ItemCard({ item, refreshItems }) {
         }
     };
 
+    const itemSearchUrl = itemType
+        ? 'https://www.google.com/search?q=' + itemType.name + '%20' + item.note + '&tbm=shop&hl=cs'
+        : '';
     const openWebsite = () => {
         setOpen(false);
-        window.open(
-            'https://www.google.com/search?q=' +
-                itemType.name +
-                ' ' +
-                item.note +
-                '&tbm=shop&hl=cs',
-            '_blank'
-        );
+        window.open(itemSearchUrl, '_blank');
     };
 
     const cardStyle = {
@@ -132,6 +128,31 @@ function ItemCard({ item, refreshItems }) {
             </Card>
         );
     }
+
+    const shopOpenModal = (
+        <Modal open={open} onClose={() => setOpen(false)}>
+            <ModalDialog variant="outlined" role="alertdialog">
+                <DialogTitle>
+                    <WarningRoundedIcon />
+                    Upozornění
+                </DialogTitle>
+                <Divider />
+                <DialogContent>
+                    Opravdu chcete otevřít webovou stránku s produktem?
+                    <br />
+                    <small>{itemSearchUrl}</small>
+                </DialogContent>
+                <DialogActions>
+                    <Button variant="solid" onClick={openWebsite}>
+                        Pokračovat
+                    </Button>
+                    <Button variant="plain" color="neutral" onClick={() => setOpen(false)}>
+                        Zrušit
+                    </Button>
+                </DialogActions>
+            </ModalDialog>
+        </Modal>
+    );
 
     return (
         <>
@@ -159,39 +180,30 @@ function ItemCard({ item, refreshItems }) {
                             </Stack>
                         </Stack>
                         <Box sx={{ display: 'flex', gap: 2 }}>
-                            <Button size="sm" variant="soft" onClick={updateItemSubtract}>
+                            <Button
+                                disabled={item.checked}
+                                size="sm"
+                                variant="soft"
+                                onClick={updateItemSubtract}
+                            >
                                 <RemoveIcon />
                             </Button>
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                 <Typography level="h5">{item.quantity}</Typography>
                             </Box>
-                            <Button size="sm" variant="soft" onClick={updateItemAdd}>
+                            <Button
+                                disabled={item.checked}
+                                size="sm"
+                                variant="soft"
+                                onClick={updateItemAdd}
+                            >
                                 <Add />
                             </Button>
                         </Box>
                     </Stack>
                 </CardContent>
             </Card>
-            <Modal open={open} onClose={() => setOpen(false)}>
-                <ModalDialog variant="outlined" role="alertdialog">
-                    <DialogTitle>
-                        <WarningRoundedIcon />
-                        Upozornění
-                    </DialogTitle>
-                    <Divider />
-                    <DialogContent>
-                        Opravdu chcete otevřít webovou stránku s produktem?
-                    </DialogContent>
-                    <DialogActions>
-                        <Button variant="solid" onClick={openWebsite}>
-                            Pokračovat
-                        </Button>
-                        <Button variant="plain" color="neutral" onClick={() => setOpen(false)}>
-                            Zrušit
-                        </Button>
-                    </DialogActions>
-                </ModalDialog>
-            </Modal>
+            {shopOpenModal}
         </>
     );
 }
