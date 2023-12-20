@@ -13,6 +13,7 @@ router.put('/list/:list_id/rename', UserController.renameList);
 router.delete('/list/:list_id/delete', UserController.deleteList);
 
 router.put('/list/:list_id/item/create', UserController.createNewItemInList);
+router.delete('/list/:list_id/item/:item_id/delete', UserController.deleteItemInList);
 router.get('/list/:list_id/item/', UserController.getAllListItems);
 router.put('/list/:list_id/item/:item_id/update', UserController.updateItemInList);
 

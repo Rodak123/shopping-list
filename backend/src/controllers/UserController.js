@@ -228,6 +228,45 @@ const createNewItemInList = async (req, res) => {
     }
 };
 
+const deleteItemInList = async (req, res) => {
+    const id = req.session.user_id;
+    const { list_id, item_id } = req.params;
+
+    try {
+        const user = await User.findByPk(id, {
+            include: {
+                model: ShoppingList,
+                include: Item,
+            },
+        });
+
+        if (!user) {
+            res.status(404).json({ message: 'User not found' });
+            return;
+        }
+
+        const list = user.ShoppingLists.find((list) => list.id == list_id);
+
+        if (!list) {
+            res.status(404).json({ message: 'List not found' });
+            return;
+        }
+
+        const item = list.Items.find((item) => item.id == item_id);
+
+        if (!item) {
+            res.status(404).json({ message: 'Item not found' });
+            return;
+        }
+
+        await item.destroy();
+
+        res.status(201).json(item);
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting item', error: error });
+    }
+};
+
 const getAllListItems = async (req, res) => {
     const id = req.session.user_id;
     const { list_id } = req.params;
@@ -373,6 +412,7 @@ module.exports = {
     deleteList: deleteList,
 
     createNewItemInList: createNewItemInList,
+    deleteItemInList: deleteItemInList,
     getAllListItems: getAllListItems,
     updateItemInList: updateItemInList,
 
