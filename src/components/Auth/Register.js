@@ -23,6 +23,7 @@ function Register({ toLogin }) {
     const [error, setError] = useState(null);
 
     const regiser = () => {
+        setError(null);
         api.registerUser(username, password, passwordConfirm, setError);
         setPasswordConfirm('');
     };
@@ -44,42 +45,50 @@ function Register({ toLogin }) {
                     }}
                 >
                     <Stack direction="column" spacing={2} alignItems="stretch">
-                        <FormControl error={error !== null}>
-                            <FormLabel>Uživatelksé jméno</FormLabel>
-                            <Input
-                                placeholder="Uživatelské jméno"
-                                value={username}
-                                onChange={(event) => setUsername(event.target.value)}
-                                required={true}
-                                type="text"
-                            />
-                        </FormControl>
-                        <FormControl error={error !== null}>
-                            <FormLabel>Heslo</FormLabel>
-                            <Input
-                                placeholder="Heslo"
-                                value={password}
-                                onChange={(event) => setPassword(event.target.value)}
-                                type="password"
-                                required={true}
-                            />
-                        </FormControl>
-                        <FormControl error={error !== null}>
-                            <FormLabel>Potvrzení Hesla</FormLabel>
-                            <Input
-                                placeholder="Potvezení Hesla"
-                                value={passwordConfirm}
-                                onChange={(event) => setPasswordConfirm(event.target.value)}
-                                type="password"
-                                required={true}
-                            />
-                            {error && (
-                                <FormHelperText color="danger">
-                                    <InfoOutlined />
-                                    {error}
-                                </FormHelperText>
-                            )}
-                        </FormControl>
+                        <form
+                            onSubmit={(event) => {
+                                event.preventDefault();
+                                regiser();
+                            }}
+                        >
+                            <FormControl error={error !== null}>
+                                <FormLabel>Uživatelksé jméno</FormLabel>
+                                <Input
+                                    placeholder="Uživatelské jméno"
+                                    value={username}
+                                    onChange={(event) => setUsername(event.target.value)}
+                                    required={true}
+                                    type="text"
+                                />
+                            </FormControl>
+                            <FormControl error={error !== null}>
+                                <FormLabel>Heslo</FormLabel>
+                                <Input
+                                    placeholder="Heslo"
+                                    value={password}
+                                    onChange={(event) => setPassword(event.target.value)}
+                                    type="password"
+                                    required={true}
+                                />
+                            </FormControl>
+                            <FormControl error={error !== null}>
+                                <FormLabel>Potvrzení Hesla</FormLabel>
+                                <Input
+                                    placeholder="Potvezení Hesla"
+                                    value={passwordConfirm}
+                                    onChange={(event) => setPasswordConfirm(event.target.value)}
+                                    type="password"
+                                    required={true}
+                                />
+                                {error && (
+                                    <FormHelperText color="danger">
+                                        <InfoOutlined />
+                                        {error}
+                                    </FormHelperText>
+                                )}
+                            </FormControl>
+                            <input type="submit" hidden />
+                        </form>
                     </Stack>
                     <CardActions>
                         <Button variant="solid" color="primary" onClick={regiser}>

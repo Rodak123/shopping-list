@@ -260,7 +260,7 @@ const createNewItemInList = async (req, res) => {
         const [userItemType, created] = await UserItemType.findOrCreate({
             where: { user_id: user.id, item_type_id: type.id },
         });
-        userItemType.count_used = userItemType.count_used + 1;
+        userItemType.count_used = userItemType.count_used + parseInt(quantity);
 
         await userItemType.save();
 
@@ -312,10 +312,10 @@ const deleteItemInList = async (req, res) => {
             const [userItemType, created] = await UserItemType.findOrCreate({
                 where: { user_id: user.id, item_type_id: type.id },
             });
-            userItemType.count_used = userItemType.count_used - 1;
+            userItemType.count_used = userItemType.count_used - item.quantity;
 
             if (userItemType.count_used <= 0) {
-                await updateItemType.destroy();
+                await userItemType.destroy();
             } else {
                 await userItemType.save();
             }
@@ -374,7 +374,9 @@ const updateItemInList = async (req, res) => {
         const user = await User.findByPk(id, {
             include: {
                 model: ShoppingList,
-                include: Item,
+                include: {
+                    model: Item,
+                },
             },
         });
 
@@ -400,10 +402,23 @@ const updateItemInList = async (req, res) => {
         item.quantity = item.quantity + delta_quantity;
         if (change_checked) item.checked = checked;
 
+        //console.log(item);
+        const [userItemType, created] = await UserItemType.findOrCreate({
+            where: { user_id: user.id, item_type_id: item.item_type_id },
+        });
+        //console.log(count_used);
+        userItemType.count_used = userItemType.count_used + parseInt(delta_quantity);
+        if (userItemType.count_used <= 0) {
+            await userItemType.destroy();
+        } else {
+            await userItemType.save();
+        }
+
         await item.save();
 
         res.status(201).json(item);
     } catch (error) {
+        console.log(error);
         res.status(500).json({ message: 'Error updating item', error: error });
     }
 };
