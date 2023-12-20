@@ -24,7 +24,8 @@ function ItemCard({ item, refreshItems }) {
     const { api, apiSession } = useApi();
     const [itemType, setItemType] = useState(null);
     const { shoppingListsPrefs } = usePreferences();
-    const [open, setOpen] = useState(false);
+    const [openLinkWarning, setOpenLinkWarning] = useState(false);
+    const [openDeleteWarning, setOpenDeleteWarning] = useState(false);
 
     const onCheckboxToggled = () => {
         if (api !== null) {
@@ -76,7 +77,8 @@ function ItemCard({ item, refreshItems }) {
                 .then(function (res) {
                     if (res.data) {
                         if (item.quantity <= 1) {
-                            itemDelete();
+                            setOpenDeleteWarning(true);
+                            updateItemAdd();
                         }
                         refreshItems();
                     }
@@ -134,7 +136,7 @@ function ItemCard({ item, refreshItems }) {
           '&tbm=shop&hl=cs'
         : '';
     const openWebsite = () => {
-        setOpen(false);
+        setOpenLinkWarning(false);
         window.open(itemSearchUrl, '_blank');
     };
 
@@ -154,7 +156,7 @@ function ItemCard({ item, refreshItems }) {
     }
 
     const shopOpenModal = (
-        <Modal open={open} onClose={() => setOpen(false)}>
+        <Modal open={openLinkWarning} onClose={() => setOpenLinkWarning(false)}>
             <ModalDialog variant="outlined" role="alertdialog">
                 <DialogTitle>
                     <WarningRoundedIcon />
@@ -170,7 +172,36 @@ function ItemCard({ item, refreshItems }) {
                     <Button variant="solid" onClick={openWebsite}>
                         Pokračovat
                     </Button>
-                    <Button variant="plain" color="neutral" onClick={() => setOpen(false)}>
+                    <Button
+                        variant="plain"
+                        color="neutral"
+                        onClick={() => setOpenLinkWarning(false)}
+                    >
+                        Zrušit
+                    </Button>
+                </DialogActions>
+            </ModalDialog>
+        </Modal>
+    );
+
+    const itemDeletePopup = (
+        <Modal open={openDeleteWarning} onClose={() => setOpenDeleteWarning(false)}>
+            <ModalDialog variant="outlined" role="alertdialog">
+                <DialogTitle>
+                    <WarningRoundedIcon />
+                    Upozornění
+                </DialogTitle>
+                <Divider />
+                <DialogContent>Opravdu chcete otevřít webovou stránku s produktem?</DialogContent>
+                <DialogActions>
+                    <Button variant="solid" onClick={itemDelete}>
+                        Pokračovat
+                    </Button>
+                    <Button
+                        variant="plain"
+                        color="neutral"
+                        onClick={() => setOpenDeleteWarning(false)}
+                    >
                         Zrušit
                     </Button>
                 </DialogActions>
@@ -196,7 +227,7 @@ function ItemCard({ item, refreshItems }) {
                             <Stack direction="column" justifyContent="flex-start">
                                 <Typography level="title-md">
                                     <Link overlay></Link>
-                                    <Link underline="none" onClick={() => setOpen(true)}>
+                                    <Link underline="none" onClick={() => setOpenLinkWarning(true)}>
                                         {itemType.name}
                                     </Link>
                                 </Typography>
@@ -228,6 +259,7 @@ function ItemCard({ item, refreshItems }) {
                 </CardContent>
             </Card>
             {shopOpenModal}
+            {itemDeletePopup}
         </>
     );
 }
