@@ -6,6 +6,9 @@ const UserController = require('../controllers/UserController');
 // router.get('/:id', UserController.getUserById);
 router.get('/', UserController.getUserBySession);
 
+router.get('/type_used', UserController.getAllUserItemTypes);
+router.get('/type_used/:item_type_id', UserController.getUserItemTypeById);
+
 router.put('/list/create', UserController.createNewList);
 router.get('/list', UserController.getAllLists);
 router.get('/list/:list_id', UserController.getListById);

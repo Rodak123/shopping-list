@@ -93,8 +93,8 @@ function SidebarContent({ setOpen }) {
 
     return (
         <>
-            <DialogTitle>
-                <ModalClose size="lg" />
+            <DialogTitle sx={{ mb: '12px' }}>
+                <ModalClose />
                 Nákupní listy
             </DialogTitle>
             <DialogContent>

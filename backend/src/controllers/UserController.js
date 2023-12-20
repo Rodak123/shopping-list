@@ -2,6 +2,7 @@ const ShoppingList = require('../models/ShoppingList');
 const User = require('../models/User');
 const ItemType = require('../models/ItemType');
 const Item = require('../models/Item');
+const UserItemType = require('../models/UserItemType');
 
 // const getAllUsers = async (req, res) => {
 //     try {
@@ -22,6 +23,46 @@ const Item = require('../models/Item');
 //         res.status(500).json({ message: 'Error fetching user', error: error });
 //     }
 // };
+
+const getAllUserItemTypes = async (req, res) => {
+    const id = req.session.user_id;
+    try {
+        const user = await User.findByPk(id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found', error: error });
+        }
+
+        const userItemTypes = await UserItemType.findAll({
+            where: { user_id: id },
+        });
+
+        res.status(201).json(userItemTypes);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching user item types' });
+    }
+};
+
+const getUserItemTypeById = async (req, res) => {
+    const id = req.session.user_id;
+    const { item_type_id } = req.params;
+
+    try {
+        const user = await User.findByPk(id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found', error: error });
+        }
+
+        const userItemType = await UserItemType.findOne({
+            where: { user_id: id, item_type_id: item_type_id },
+        });
+
+        res.status(201).json(userItemType);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching user item type' });
+    }
+};
 
 const getUserBySession = async (req, res) => {
     const id = req.session.user_id;
@@ -216,6 +257,13 @@ const createNewItemInList = async (req, res) => {
 
         await item.setItemType(type);
 
+        const [userItemType, created] = await UserItemType.findOrCreate({
+            where: { user_id: user.id, item_type_id: type.id },
+        });
+        userItemType.count_used = userItemType.count_used + 1;
+
+        await userItemType.save();
+
         await item.save();
 
         await list.addItem(item);
@@ -257,6 +305,20 @@ const deleteItemInList = async (req, res) => {
         if (!item) {
             res.status(404).json({ message: 'Item not found' });
             return;
+        }
+
+        const type = await ItemType.findByPk(item.getItemType());
+        if (type) {
+            const [userItemType, created] = await UserItemType.findOrCreate({
+                where: { user_id: user.id, item_type_id: type.id },
+            });
+            userItemType.count_used = userItemType.count_used - 1;
+
+            if (userItemType.count_used <= 0) {
+                await updateItemType.destroy();
+            } else {
+                await userItemType.save();
+            }
         }
 
         await item.destroy();
@@ -404,6 +466,9 @@ module.exports = {
     //getAllUsers: getAllUsers,
     //getUserById: getUserById,
     getUserBySession: getUserBySession,
+
+    getAllUserItemTypes: getAllUserItemTypes,
+    getUserItemTypeById: getUserItemTypeById,
 
     createNewList: createNewList,
     getAllLists: getAllLists,
