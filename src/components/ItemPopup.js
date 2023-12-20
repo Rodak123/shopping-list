@@ -1,3 +1,4 @@
+import InfoOutlined from '@mui/icons-material/InfoOutlined';
 import {
     Autocomplete,
     Button,
@@ -6,6 +7,7 @@ import {
     CardContent,
     Divider,
     FormControl,
+    FormHelperText,
     FormLabel,
     Grid,
     Input,
@@ -27,6 +29,7 @@ function ItemPopup({ onClose }) {
 
     const [itemNote, setItemNote] = useState('');
     const [itemQuantity, setItemQuantity] = useState(1);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         if (api !== null) {
@@ -60,6 +63,7 @@ function ItemPopup({ onClose }) {
     }, [api]);
 
     const addItem = () => {
+        setError(null);
         if (api !== null && selectedItem !== null) {
             const apiInstance = api.createApiInstance(apiSession);
             apiInstance
@@ -77,6 +81,13 @@ function ItemPopup({ onClose }) {
                 })
                 .catch((error) => {
                     api.apiFailed(error);
+                    if (error.response.status === 422) {
+                        switch (error.response.data.field) {
+                            case 'quantity':
+                                setError('Počet nesmí být menší než 1');
+                                break;
+                        }
+                    }
                 });
         }
     };
@@ -161,14 +172,21 @@ function ItemPopup({ onClose }) {
                         </FormControl>
                     </Grid>
                     <Grid xs={12} md={6}>
-                        <FormControl>
+                        <FormControl error={error !== null}>
                             <FormLabel>Počet položky</FormLabel>
                             <Input
                                 placeholder="Počet položky"
                                 type="number"
                                 value={itemQuantity}
                                 onChange={(event) => setItemQuantity(event.target.value)}
+                                min={1}
                             />
+                            {error && (
+                                <FormHelperText color="danger">
+                                    <InfoOutlined />
+                                    {error}
+                                </FormHelperText>
+                            )}
                         </FormControl>
                     </Grid>
                 </Grid>

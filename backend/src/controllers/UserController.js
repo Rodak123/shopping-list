@@ -222,10 +222,17 @@ const createNewItemInList = async (req, res) => {
     const id = req.session.user_id;
     const { list_id } = req.params;
     const { note, quantity, type_id } = req.body;
+
     if (!note || !quantity || !type_id) {
         res.status(400).json({ message: 'Note, quantity, and type are required' });
         return;
     }
+
+    if (quantity < 1) {
+        res.status(422).json({ field: 'quantity', message: 'Quantity must not be under 1' });
+        return;
+    }
+
     try {
         const user = await User.findByPk(id, {
             include: ShoppingList,
