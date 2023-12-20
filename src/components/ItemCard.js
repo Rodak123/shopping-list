@@ -75,6 +75,9 @@ function ItemCard({ item, refreshItems }) {
                 )
                 .then(function (res) {
                     if (res.data) {
+                        if (item.quantity <= 1) {
+                            itemDelete();
+                        }
                         refreshItems();
                     }
                 })
@@ -98,6 +101,24 @@ function ItemCard({ item, refreshItems }) {
                     if (res.data) {
                         refreshItems();
                         console.log(res.data);
+                    }
+                })
+                .catch((error) => {
+                    api.apiFailed(error);
+                });
+        }
+    };
+
+    const itemDelete = () => {
+        if (api !== null) {
+            const apiInstance = api.createApiInstance(apiSession);
+            apiInstance
+                .delete(
+                    '/user/list/' + shoppingListsPrefs.selectedId + '/item/' + item.id + '/delete'
+                )
+                .then(function (res) {
+                    if (res.data) {
+                        refreshItems();
                     }
                 })
                 .catch((error) => {
