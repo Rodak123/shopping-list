@@ -22,6 +22,7 @@ function ItemPopup({ onClose }) {
     const { api, apiSession } = useApi();
     const { shoppingListsPrefs } = usePreferences();
     const [types, setTypes] = useState([]);
+    const [userTypes, setUserTypes] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
 
     const [itemNote, setItemNote] = useState('');
@@ -41,6 +42,21 @@ function ItemPopup({ onClose }) {
                     api.apiFailed(error);
                 });
         }
+    }, [api]);
+
+    useEffect(() => {
+        if (api === null) return;
+        const apiInstance = api.createApiInstance(apiSession);
+        apiInstance
+            .get('/user/type_used')
+            .then((res) => {
+                if (res.data) {
+                    setUserTypes(res.data);
+                }
+            })
+            .catch((error) => {
+                api.apiFailed(error);
+            });
     }, [api]);
 
     const addItem = () => {
@@ -78,8 +94,8 @@ function ItemPopup({ onClose }) {
             </Card>
         );
     }
-    const selectTypes = [];
 
+    const selectTypes = [];
     for (const type of types) {
         selectTypes.push({
             label: type.name,
@@ -87,7 +103,29 @@ function ItemPopup({ onClose }) {
         });
     }
 
+    let userFavoriteTypes = [];
+    for (const type of userTypes) {
+        userFavoriteTypes.push({
+            id: type.item_type_id,
+            count: type.count_used,
+        });
+    }
+    userFavoriteTypes.sort((a, b) => (a.count > b.count ? 1 : -1));
+    userFavoriteTypes = userFavoriteTypes.slice(0, 5);
+
+    for (let i = selectTypes.length - 1; i >= 0; i--) {
+        const type = selectTypes[i];
+        for (const favType of userFavoriteTypes) {
+            if (type.id === favType.id) {
+                favType.label = type.label;
+                selectTypes.splice(i, 1);
+            }
+        }
+    }
+
     selectTypes.sort((a, b) => (a.label > b.label ? 1 : -1));
+
+    const options = userFavoriteTypes.concat(selectTypes);
 
     return (
         <Card {...cardStyle}>
@@ -100,8 +138,11 @@ function ItemPopup({ onClose }) {
                         <FormControl>
                             <FormLabel>Název položky</FormLabel>
                             <Autocomplete
-                                options={selectTypes}
+                                options={options}
                                 placeholder="Název položky"
+                                groupBy={(options) =>
+                                    options.count ? 'Nedávno přidané' : 'Všechny položky'
+                                }
                                 onChange={(event, newValue) => {
                                     setSelectedItem(newValue);
                                 }}

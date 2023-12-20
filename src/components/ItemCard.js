@@ -192,7 +192,7 @@ function ItemCard({ item, refreshItems }) {
                     Upozornění
                 </DialogTitle>
                 <Divider />
-                <DialogContent>Opravdu chcete otevřít webovou stránku s produktem?</DialogContent>
+                <DialogContent>Opravdu chcete odstranit produkt z nákupního listu?</DialogContent>
                 <DialogActions>
                     <Button variant="solid" onClick={itemDelete}>
                         Pokračovat
