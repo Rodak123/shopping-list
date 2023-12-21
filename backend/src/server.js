@@ -41,7 +41,12 @@ const loadProductTaxonomy = require('../loadProductTaxonomy');
     // ---
     // Load data
     if (forceCreate) {
-        const taxonomy = await loadProductTaxonomy('./product_type_taxonomy.xml');
+        //const taxonomy = await loadProductTaxonomy('./product_type_taxonomy.xml');
+        const taxonomy = {
+            Root: {
+                Item: ['Houska', 'Rohlik', 'Melko'],
+            },
+        };
         const addAll = async (root) => {
             const self = root['$'];
             const categories = root['Category'];
