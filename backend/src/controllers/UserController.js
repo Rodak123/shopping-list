@@ -314,7 +314,7 @@ const deleteItemInList = async (req, res) => {
             return;
         }
 
-        const type = await ItemType.findByPk(item.getItemType());
+        const type = await ItemType.findByPk(item.item_type_id);
         if (type) {
             const [userItemType, created] = await UserItemType.findOrCreate({
                 where: { user_id: user.id, item_type_id: type.id },
@@ -332,6 +332,7 @@ const deleteItemInList = async (req, res) => {
 
         res.status(201).json(item);
     } catch (error) {
+        console.log(error);
         res.status(500).json({ message: 'Error deleting item', error: error });
     }
 };
