@@ -44,7 +44,7 @@ const loadProductTaxonomy = require('../loadProductTaxonomy');
         //const taxonomy = await loadProductTaxonomy('./product_type_taxonomy.xml');
         const taxonomy = {
             Root: {
-                Item: ['Houska', 'Rohlik', 'Melko'],
+                Item: await loadProductTaxonomy('./product_type_taxonomy.txt'),
             },
         };
         const addAll = async (root) => {

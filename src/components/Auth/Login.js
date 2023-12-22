@@ -57,6 +57,7 @@ function Login({ toRegister }) {
                             <FormControl error={error !== null}>
                                 <FormLabel>Uživatelksé jméno</FormLabel>
                                 <Input
+                                    autoFocus
                                     placeholder="Uživatelské jméno"
                                     value={username}
                                     onChange={(event) => setUsername(event.target.value)}

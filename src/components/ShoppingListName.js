@@ -6,9 +6,9 @@ import {
     Menu,
     MenuButton,
     MenuItem,
-    Typography,
     Modal,
     ModalDialog,
+    Typography,
 } from '@mui/joy';
 import Box from '@mui/joy/Box';
 import { useState } from 'react';
@@ -18,7 +18,7 @@ import SharePopup from './SharePopup';
 
 function ShoppingListName() {
     const { api, apiSession } = useApi();
-    const { shoppingListsPrefs } = usePreferences();
+    const { shoppingListsPrefs, userPrefs } = usePreferences();
 
     const [renamingShoppingList, setRenamingShoppingList] = useState(false);
     const [sharingPopupOpen, setSharingPopupOpen] = useState(false);
@@ -78,6 +78,10 @@ function ShoppingListName() {
         setSharingPopupOpen(false);
     };
 
+    const userNotOwner = !(
+        isSelectedShoppingList && shoppingListsPrefs.selected.owner === userPrefs.user.id
+    );
+
     return (
         <Box
             sx={{
@@ -98,6 +102,13 @@ function ShoppingListName() {
                     }}
                 >
                     <Input
+                        autoFocus
+                        onKeyDown={(e) => {
+                            if (e.key === 'Escape') {
+                                setRenamingShoppingList(false);
+                                setNewShoppingListName('');
+                            }
+                        }}
                         value={newShoppingListName}
                         onChange={(e) => setNewShoppingListName(e.target.value)}
                         disabled={false}
@@ -123,8 +134,11 @@ function ShoppingListName() {
                                 <MoreVert />
                             </MenuButton>
                             <Menu>
-                                <MenuItem onClick={deleteList}>Smazat</MenuItem>
+                                <MenuItem disabled={userNotOwner} onClick={deleteList}>
+                                    Smazat
+                                </MenuItem>
                                 <MenuItem
+                                    disabled={userNotOwner}
                                     onClick={() => {
                                         setRenamingShoppingList(true);
                                     }}
@@ -132,6 +146,7 @@ function ShoppingListName() {
                                     Přejmenovat
                                 </MenuItem>
                                 <MenuItem
+                                    disabled={userNotOwner}
                                     onClick={() => {
                                         shareList();
                                     }}

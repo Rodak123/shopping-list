@@ -2,7 +2,7 @@ import { Box, Button, Modal, ModalDialog } from '@mui/joy';
 import * as React from 'react';
 import { useState } from 'react';
 import { usePreferences } from '../contexts/PreferencesContext';
-import ItemPopup from './ItemPopup';
+import ItemAddPopup from './ItemAddPopup';
 
 function ItemAdd({ refreshItems }) {
     const { shoppingListsPrefs } = usePreferences();
@@ -32,7 +32,7 @@ function ItemAdd({ refreshItems }) {
                         padding: 0,
                     }}
                 >
-                    <ItemPopup onClose={onClose} />
+                    <ItemAddPopup onClose={onClose} />
                 </ModalDialog>
             </Modal>
         </Box>

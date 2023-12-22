@@ -20,7 +20,7 @@ import { useApi } from '../contexts/ApiContext';
 import { usePreferences } from '../contexts/PreferencesContext';
 import Loading from './Loading';
 
-function ItemPopup({ onClose }) {
+function ItemAddPopup({ onClose }) {
     const { api, apiSession } = useApi();
     const { shoppingListsPrefs } = usePreferences();
     const [types, setTypes] = useState([]);
@@ -45,7 +45,7 @@ function ItemPopup({ onClose }) {
                     api.apiFailed(error);
                 });
         }
-    }, [api]);
+    }, [api, apiSession]);
 
     useEffect(() => {
         if (api === null) return;
@@ -60,7 +60,7 @@ function ItemPopup({ onClose }) {
             .catch((error) => {
                 api.apiFailed(error);
             });
-    }, [api]);
+    }, [api, apiSession]);
 
     const addItem = () => {
         setError(null);
@@ -74,8 +74,6 @@ function ItemPopup({ onClose }) {
                 })
                 .then(function (res) {
                     if (res.data) {
-                        console.log(res.data);
-                        console.log(itemNote);
                         onClose();
                     }
                 })
@@ -85,6 +83,9 @@ function ItemPopup({ onClose }) {
                         switch (error.response.data.field) {
                             case 'quantity':
                                 setError('Počet nesmí být menší než 1');
+                                break;
+                            default:
+                                setError('Nepodařilo se přidat položku');
                                 break;
                         }
                     }
@@ -149,6 +150,7 @@ function ItemPopup({ onClose }) {
                         <FormControl>
                             <FormLabel>Název položky</FormLabel>
                             <Autocomplete
+                                autoFocus
                                 options={options}
                                 placeholder="Název položky"
                                 groupBy={(options) =>
@@ -200,4 +202,4 @@ function ItemPopup({ onClose }) {
     );
 }
 
-export default ItemPopup;
+export default ItemAddPopup;

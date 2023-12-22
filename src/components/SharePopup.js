@@ -77,10 +77,10 @@ function SharePopup({ onClose }) {
                 <FormControl error={error !== null}>
                     <FormLabel>UID uživatele</FormLabel>
                     <Input
+                        autoFocus
                         placeholder={user.uid}
                         value={uid}
                         onChange={(event) => setUid(event.target.value)}
-                        autoFocus={true}
                     />
                     {error && (
                         <FormHelperText color="danger">
