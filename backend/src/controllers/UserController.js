@@ -174,6 +174,11 @@ const renameList = async (req, res) => {
             return;
         }
 
+        if (list.owner !== user.id) {
+            res.status(400).json({ message: 'Only the owner can share this list' });
+            return;
+        }
+
         list.name = name;
 
         await list.save();
@@ -455,6 +460,11 @@ const shareShoppingList = async (req, res) => {
 
         if (!list) {
             res.status(404).json({ message: 'List not found' });
+            return;
+        }
+
+        if (list.owner !== user.id) {
+            res.status(400).json({ message: 'Only the owner can share this list' });
             return;
         }
 
