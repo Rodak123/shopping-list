@@ -11,8 +11,13 @@ export const ApiProvider = ({ children }) => {
     const [apiSessionLoaded, setApiSessionLoaded] = useState(false);
 
     const createApiInstance = (apiSession) => {
+        const baseURL =
+            process.env.NODE_ENV === 'development'
+                ? 'http://localhost:3100'
+                : 'https://www.therodak.online/shopping-list/api';
+
         return axios.create({
-            baseURL: 'http://localhost:3100',
+            baseURL,
             headers: { Authorization: apiSession ? apiSession.token : 'bar' },
         });
     };
