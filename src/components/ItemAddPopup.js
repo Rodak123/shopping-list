@@ -150,7 +150,6 @@ function ItemAddPopup({ onClose }) {
         if (firstLetter == '*') {
             const newOptions = selectTypes;
             setOptions(newOptions);
-            console.log(options);
             return;
         } else {
             const newOptions = typesByFirstLetter[firstLetter] || [];
@@ -181,9 +180,7 @@ function ItemAddPopup({ onClose }) {
                                 onChange={(event, newValue) => {
                                     setSelectedItem(newValue);
                                 }}
-                                isOptionEqualToValue={(option, value) =>
-                                    value === '*' || option.id === value.id
-                                }
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
                             />
                         </FormControl>
                     </Grid>
