@@ -63,14 +63,6 @@ function App() {
         }
     }
 
-    // const fetchUserItemTypes = () => {
-    //     if (api === null) return;
-    //     const apiInstance = api.createApiInstance(apiSession);
-    //     apiInstance.get('/user/type_used').then((res) => {
-    //         console.log(res?.data);
-    //     });
-    // };
-
     return (
         <>
             <PreferencesProvider>

@@ -26,7 +26,7 @@ function ItemAddPopup({ onClose }) {
     const [types, setTypes] = useState([]);
     const [userTypes, setUserTypes] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
-
+    const [options, setOptions] = useState([]);
     const [itemNote, setItemNote] = useState('');
     const [itemQuantity, setItemQuantity] = useState(1);
     const [error, setError] = useState(null);
@@ -137,7 +137,26 @@ function ItemAddPopup({ onClose }) {
 
     selectTypes.sort((a, b) => (a.label > b.label ? 1 : -1));
 
-    const options = userFavoriteTypes.concat(selectTypes);
+    const typesByFirstLetter = {};
+    for (const type of selectTypes) {
+        const firstLetter = type.label.charAt(0).toLowerCase();
+        if (!typesByFirstLetter[firstLetter]) {
+            typesByFirstLetter[firstLetter] = [];
+        }
+        typesByFirstLetter[firstLetter].push(type);
+    }
+    const inputChange = (event, value) => {
+        const firstLetter = value.charAt(0).toLowerCase();
+        if (firstLetter == '*') {
+            const newOptions = selectTypes;
+            setOptions(newOptions);
+            console.log(options);
+            return;
+        } else {
+            const newOptions = typesByFirstLetter[firstLetter] || [];
+            setOptions(newOptions);
+        }
+    };
 
     return (
         <Card {...cardStyle}>
@@ -156,10 +175,15 @@ function ItemAddPopup({ onClose }) {
                                 groupBy={(options) =>
                                     options.count ? 'Nedávno přidané' : 'Všechny položky'
                                 }
+                                onInputChange={(event, newValue) => {
+                                    inputChange(event, newValue);
+                                }}
                                 onChange={(event, newValue) => {
                                     setSelectedItem(newValue);
                                 }}
-                                isOptionEqualToValue={(option, value) => option.id === value.id}
+                                isOptionEqualToValue={(option, value) =>
+                                    value === '*' || option.id === value.id
+                                }
                             />
                         </FormControl>
                     </Grid>

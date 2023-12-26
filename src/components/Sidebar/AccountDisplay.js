@@ -39,9 +39,6 @@ function AccountDisplay({ user }) {
                             <Typography level="title-md">{username}</Typography>
                         </Button>
                     </Tooltip>
-                    <Typography level="body-sm">
-                        od <DateFormatter date={dateJoined} />
-                    </Typography>
                 </Box>
                 <Button variant="outlined" onClick={logout}>
                     Odhlasit se
