@@ -23,6 +23,22 @@ const register = async (req, res) => {
                 .json({ type: 'userExists', message: 'User name already exists' });
         }
 
+        if (password.length < 8) {
+            return res.status(400).json({
+                type: 'passwordStrength',
+                message: 'Password must be at least 8 characters long',
+            });
+        }
+
+        const strengthTest = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+
+        if (!strengthTest.test(password)) {
+            return res.status(400).json({
+                type: 'passwordStrength',
+                message: 'Password must contain at least one special character',
+            });
+        }
+
         if (password !== password_confirm) {
             return res
                 .status(400)
@@ -40,6 +56,7 @@ const register = async (req, res) => {
 
         res.status(201).json(user);
     } catch (error) {
+        console.log(error);
         res.status(500).json({ message: 'Error registering user' });
     }
 };

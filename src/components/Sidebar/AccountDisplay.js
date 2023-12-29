@@ -1,7 +1,6 @@
 import { Avatar, Box, Button, Stack, Tooltip, Typography } from '@mui/joy';
 import { useState } from 'react';
 import { useApi } from '../../contexts/ApiContext';
-import DateFormatter from '../DateFormatter';
 
 function AccountDisplay({ user }) {
     const { logout } = useApi();
@@ -36,7 +35,9 @@ function AccountDisplay({ user }) {
                         title={showCopiedMessage ? 'UID bylo kopírováno' : 'Kopirovat Vaše UID?'}
                     >
                         <Button variant="plain" color="neutral" onClick={copyUID}>
-                            <Typography level="title-md">{username}</Typography>
+                            <Typography title={'Připojil se k nám: ' + dateJoined} level="title-md">
+                                {username}
+                            </Typography>
                         </Button>
                     </Tooltip>
                 </Box>

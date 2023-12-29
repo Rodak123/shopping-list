@@ -8,7 +8,7 @@ import { useApi } from './contexts/ApiContext';
 import { PreferencesProvider } from './contexts/PreferencesContext';
 
 function App() {
-    const { api, apiLoaded, apiSession, apiSessionLoaded } = useApi();
+    const { api, apiLoaded, apiSessionLoaded } = useApi();
 
     if (apiLoaded === false) {
         return (

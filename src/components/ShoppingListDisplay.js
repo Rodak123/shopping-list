@@ -1,5 +1,5 @@
 import { Box, Divider, Grid, Stack, Typography } from '@mui/joy';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useApi } from '../contexts/ApiContext';
 import { usePreferences } from '../contexts/PreferencesContext';
 import ItemAdd from './ItemAdd';
@@ -14,7 +14,7 @@ function ShoppingListDisplay() {
     const [items, setItems] = useState(null);
     const [checkedItems, setCheckedItems] = useState(null);
 
-    const refreshItems = () => {
+    const refreshItems = useCallback(() => {
         if (api === null || !isSelectedShoppingList) return;
         const apiInstance = api.createApiInstance(apiSession);
         apiInstance
@@ -33,11 +33,11 @@ function ShoppingListDisplay() {
             .catch((error) => {
                 api.apiFailed(error);
             });
-    };
+    }, [api, apiSession, isSelectedShoppingList, shoppingListsPrefs.selectedId]);
 
     useEffect(() => {
         refreshItems();
-    }, [api, shoppingListsPrefs.selected]);
+    }, [api, shoppingListsPrefs.selected, refreshItems]);
 
     if (items === null || checkedItems === null) {
         setItems([]);

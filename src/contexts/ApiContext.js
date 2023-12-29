@@ -10,7 +10,7 @@ export const ApiProvider = ({ children }) => {
     const [apiSession, setApiSession] = useState(null);
     const [apiSessionLoaded, setApiSessionLoaded] = useState(false);
 
-    const createApiInstance = (apiSession) => {
+    const createApiInstance = useCallback((apiSession) => {
         const baseURL =
             process.env.NODE_ENV === 'development'
                 ? 'http://localhost:3100'
@@ -20,7 +20,7 @@ export const ApiProvider = ({ children }) => {
             baseURL,
             headers: { Authorization: apiSession ? apiSession.token : 'bar' },
         });
-    };
+    }, []);
 
     const loadApi = useCallback(() => {
         if (api === null) return;
@@ -42,7 +42,7 @@ export const ApiProvider = ({ children }) => {
                     setApiLoaded(true);
                 }
             });
-    }, [api, apiSession]);
+    }, [api, apiSession, createApiInstance]);
 
     const sessionSaveKey = 'shopping_list_session';
     const saveSession = (session) => {
@@ -69,7 +69,7 @@ export const ApiProvider = ({ children }) => {
         return false;
     };
 
-    const apiFailed = (error) => {
+    const apiFailed = useCallback((error) => {
         // console.log('Api failed:');
         // console.log(error);
 
@@ -86,7 +86,7 @@ export const ApiProvider = ({ children }) => {
             setApiSession(null);
             clearSession();
         }
-    };
+    }, []);
 
     const logout = () => {
         if (api !== null) {
@@ -133,6 +133,11 @@ export const ApiProvider = ({ children }) => {
                             case 'userExists':
                                 setError('Uživatel již existuje');
                                 break;
+                            case 'passwordStrength':
+                                setError(
+                                    'Heslo musí mít alespoň 8 znaků a obsahovat alespoň jeden speciální znak'
+                                );
+                                break;
                             default:
                                 setError('Nepodařilo se zaregistrovat');
                                 break;
@@ -178,7 +183,7 @@ export const ApiProvider = ({ children }) => {
             api.apiFailed = apiFailed;
             setApi(api);
         }
-    }, [api, createApiInstance]);
+    }, [api, createApiInstance, apiFailed]);
 
     useEffect(() => {
         if (apiLoaded === false) {

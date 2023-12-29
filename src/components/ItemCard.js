@@ -62,7 +62,7 @@ function ItemCard({ item, refreshItems }) {
                     api.apiFailed(error);
                 });
         }
-    }, [api]);
+    }, [api, apiSession, item]);
 
     const updateItemSubtract = () => {
         if (api !== null) {

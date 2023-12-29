@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { useApi } from './ApiContext';
 
 const PreferencesContext = createContext();
@@ -11,7 +11,7 @@ export const PreferencesProvider = ({ children }) => {
 
     const [user, setUser] = useState(null);
 
-    const refreshSelected = () => {
+    const refreshSelected = useCallback(() => {
         setSelectedShoppingList(null);
         if (api !== null && selectedShoppingListId !== -1) {
             const apiInstance = api.createApiInstance(apiSession);
@@ -29,9 +29,9 @@ export const PreferencesProvider = ({ children }) => {
                     api.apiFailed(error);
                 });
         }
-    };
+    }, [api, apiSession, selectedShoppingListId]);
 
-    const fetchUser = () => {
+    const fetchUser = useCallback(() => {
         if (api !== null) {
             setUser(null);
             const apiInstance = api.createApiInstance(apiSession);
@@ -46,15 +46,15 @@ export const PreferencesProvider = ({ children }) => {
                     api.apiFailed(error);
                 });
         }
-    };
+    }, [api, apiSession]);
 
     useEffect(() => {
         refreshSelected();
-    }, [api, selectedShoppingListId]);
+    }, [api, selectedShoppingListId, refreshSelected]);
 
     useEffect(() => {
         fetchUser();
-    }, [api, apiSession]);
+    }, [api, apiSession, fetchUser]);
 
     return (
         <PreferencesContext.Provider
