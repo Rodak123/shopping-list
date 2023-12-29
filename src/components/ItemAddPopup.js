@@ -145,16 +145,15 @@ function ItemAddPopup({ onClose }) {
         }
         typesByFirstLetter[firstLetter].push(type);
     }
+    if (options.length === 0 && userFavoriteTypes.length > 0) {
+        setOptions(userFavoriteTypes);
+    }
+
     const inputChange = (event, value) => {
         const firstLetter = value.charAt(0).toLowerCase();
-        if (firstLetter == '*') {
-            const newOptions = selectTypes;
-            setOptions(newOptions);
-            return;
-        } else {
-            const newOptions = typesByFirstLetter[firstLetter] || [];
-            setOptions(newOptions);
-        }
+        const newOptions = typesByFirstLetter[firstLetter] || [];
+
+        setOptions(userFavoriteTypes.concat(newOptions));
     };
 
     return (
