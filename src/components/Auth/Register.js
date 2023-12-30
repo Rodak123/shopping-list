@@ -34,7 +34,7 @@ function Register({ toLogin }) {
                 level="h2"
                 color="primary"
                 variant="soft"
-                sx={{ width: 150, textAlign: 'center' }}
+                sx={{ width: 150, textAlign: 'top', paddingBottom: 1.5 }}
             >
                 Registrace
             </Typography>
